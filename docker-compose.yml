@@ -1,0 +1,69 @@
+# Defining the container
+services:
+
+
+  # PostgreSQL + PostGIS database
+  postgres:
+
+    # Docker image to use.
+    # postgis/postgis = PostgreSQL with PostGIS already installed.
+    # 17-3.5 means:
+    #   PostgreSQL 17
+    #   PostGIS 3.5
+    image: postgis/postgis:17-3.5
+
+    platform: linux/amd64
+
+    container_name: resqgrid-postgres
+
+    # Auto restart the container unless we explicitly stop it.
+    restart: unless-stopped
+
+    # Environment variables
+    environment:
+
+      # PostgreSQL username.
+      POSTGRES_USER: resqgrid
+
+      # PostgreSQL password.
+      # IMPORTANT: In a real production project,
+      # don't commit real passwords to Git.
+      POSTGRES_PASSWORD: resqgrid_password
+
+      # Name of the database that PostgreSQL creates.
+      POSTGRES_DB: resqgrid
+
+    # Connect the Mac's port to the container's port.
+    #
+    # FORMAT:
+    #   "HOST_PORT:CONTAINER_PORT"
+    #
+    # So:
+    #   localhost:5432  →  PostgreSQL inside Docker
+    #
+    # This allows our Node.js backend to connect to:
+    # localhost:5432
+    ports:
+      - "5432:5432"
+
+    # Persistent storage.
+    #
+    # Without this, deleting the container could also mean
+    # losing the database data.
+    #
+    # postgres_data = Docker-managed volume
+    # /var/lib/postgresql/data = PostgreSQL's data directory
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+# Docker-managed volumes
+volumes:
+
+  # Create a persistent volume called postgres_data.
+  #
+  # PostgreSQL stores its database files here.
+  #
+  # Even if we recreate the PostgreSQL container,
+  # the database data can remain in this volume.
+  postgres_data:
