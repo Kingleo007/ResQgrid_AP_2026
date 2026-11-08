@@ -12,7 +12,6 @@ import { BrowserRouter } from 'react-router-dom';
 // import './styles/pages.css';
 
 
-// need auth for frontend but leaving it for now 
 
 // import { ToastProvider } from './components/Toast.jsx';
 // notification provider.
