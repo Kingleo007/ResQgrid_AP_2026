@@ -10,7 +10,6 @@ Build a simple, fast, and lightweight platform that helps disaster management au
 
 # Features
 
-* Live Map: View disaster locations and affected areas.
 * Incident Management: Track incidents, severity, and status.
 * Resource Management: Monitor and coordinate available resources.
 * Alerts: Display important warnings and updates.

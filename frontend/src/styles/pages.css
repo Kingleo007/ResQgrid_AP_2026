@@ -1,0 +1,112 @@
+/* frontend/src/styles/pages.css
+ * Page-specific styles: login, error pages, incident detail layout.
+ */
+
+/* ── Login page ──────────────────────────────────── */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-modal);
+  box-shadow: var(--shadow-md);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card__brand {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-card__logo {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.login-card__title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.login-card__subtitle {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.login-error {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--severity-critical-tint);
+  color: var(--severity-critical);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  border: 1px solid #f5c6c6;
+}
+
+.login-card__hint {
+  margin-top: 24px;
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+}
+
+/* ── Error / 404 / 403 pages ─────────────────────── */
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.error-page__code {
+  font-size: 6rem;
+  font-weight: 700;
+  color: var(--border);
+  line-height: 1;
+}
+
+.error-page__title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.error-page__message {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  max-width: 360px;
+  margin-bottom: 8px;
+}
+
+/* ── Incident detail layout ──────────────────────── */
+@media (max-width: 900px) {
+  .detail-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── form-input error state ──────────────────────── */
+.form-input--error {
+  border-color: var(--severity-critical);
+}
+
+.form-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.12);
+}

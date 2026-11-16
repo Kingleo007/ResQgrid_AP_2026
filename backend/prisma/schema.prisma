@@ -1,0 +1,47 @@
+// =============================================================================
+// prisma/schema.prisma — Database schema for ResQGrid
+// Two models only: User (for auth) and Incident (the core data).
+// Prisma 7 reads DATABASE_URL from the environment (via prisma7.config.ts or .env).
+// =============================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // In Prisma 7, the URL is NOT here — it lives in prisma7.config.ts
+  // which reads DATABASE_URL from your .env file
+}
+
+// ---------------------------------------------------------------------------
+// User — stores admin accounts for login
+// ---------------------------------------------------------------------------
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash") // bcrypt hash — never store plain text!
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Incident — the core entity of ResQGrid
+// ---------------------------------------------------------------------------
+model Incident {
+  id           String   @id @default(uuid())
+  incidentCode String   @unique @map("incident_code") // e.g. INC-2026-0001
+  title        String
+  hazardType   String   @map("hazard_type")           // flood, fire, cyclone, etc.
+  severity     String                                  // low, moderate, high, critical
+  status       String   @default("reported")          // reported → active → resolved → closed
+  description  String?                                // optional — the ? means nullable
+  locationName String?  @map("location_name")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at") // Prisma auto-updates this on every save
+
+  @@map("incidents")
+}
