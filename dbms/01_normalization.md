@@ -8,7 +8,7 @@ been built before any design — imagine a spreadsheet someone made to track inc
 
 ## Step 0 — The Raw Flat Table (Unnormalised)
 
-Imagine everything in one table called `incident_log`:
+Everything is in one table called `incident_log`:
 
 ```
 incident_log(
@@ -27,15 +27,6 @@ incident_log(
 )
 ```
 
-**Sample rows:**
-
-| incident_code | title | hazard_type | severity | reporter_email | reporter_name | reporter_password_hash |
-|---|---|---|---|---|---|---|
-| INC-SEED-0001 | Severe Flooding in Assam | flood | critical | admin@resqgrid.local | System Admin | $2b$10$abc... |
-| INC-SEED-0002 | Cyclone Alert - Odisha | cyclone | high | admin@resqgrid.local | System Admin | $2b$10$abc... |
-| INC-SEED-0003 | Earthquake in Gujarat | earthquake | moderate | admin@resqgrid.local | System Admin | $2b$10$abc... |
-| INC-SEED-0004 | Landslide in Uttarakhand | landslide | high | riya@resqgrid.local | Riya Sharma | $2b$10$xyz... |
-
 **Problems visible immediately:**
 - `reporter_name` and `reporter_password_hash` repeat on every row for the same reporter → **data redundancy**
 - If we update `reporter_name` for admin, we must update every row they reported → **update anomaly**
@@ -46,7 +37,7 @@ incident_log(
 
 ## Step 1 — First Normal Form (1NF)
 
-**Rule:** Every cell must hold a single atomic value. No repeating groups. Must have a primary key.
+**Rule:**  One value per cell; no lists hiding inside cells
 
 **Check on `incident_log`:**
 
@@ -58,13 +49,11 @@ incident_log(
 
 **Result: `incident_log` is already in 1NF.**
 
-The problems above are not a 1NF violation — they come from functional dependencies.
-
 ---
 
-## Step 2 — Identify All Functional Dependencies
+## Step 2 — All Functional Dependencies
 
-A functional dependency `A → B` means: knowing A is enough to determine B.
+A functional dependency `A → B` i.e A determines B
 
 ```
 FD1:  incident_code → title
@@ -76,7 +65,6 @@ FD6:  incident_code → location_name
 FD7:  incident_code → created_at
 FD8:  incident_code → updated_at
 FD9:  incident_code → reporter_email
-
 FD10: reporter_email → reporter_name
 FD11: reporter_email → reporter_password_hash
 ```
@@ -92,18 +80,13 @@ location_name, created_at, updated_at, reporter_email, reporter_name, reporter_p
 
 ## Step 3 — Second Normal Form (2NF)
 
-**Rule:** Must be in 1NF AND every non-prime attribute must be fully functionally dependent
-on the **entire** primary key (no partial dependencies).
+**Rule:** No partial dependencies
 
 A partial dependency only exists when the primary key is **composite** (multi-attribute).
 
 Since our primary key is `incident_code` (a single attribute), no partial dependency is possible.
 
-**Result: `incident_log` is automatically in 2NF. ✅**
-
-> **Note:** 2NF matters most with composite keys. For example, if the PK were
-> `(incident_code, reporter_email)` and `reporter_name` depended only on
-> `reporter_email`, that would be a partial dependency violating 2NF.
+**Result: `incident_log` is in 2NF .**
 
 ---
 
@@ -112,7 +95,7 @@ Since our primary key is `incident_code` (a single attribute), no partial depend
 **Rule:** Must be in 2NF AND no non-prime attribute must transitively depend on the primary key
 through another non-prime attribute.
 
-**Transitive dependencies found:**
+**Transitive dependencies:**
 
 ```
 incident_code → reporter_email → reporter_name
@@ -120,9 +103,8 @@ incident_code → reporter_email → reporter_password_hash
 ```
 
 Here:
-- `reporter_email` is a **non-prime** attribute (not the PK)
+- `reporter_email` is a **non-prime** attribute 
 - `reporter_name` and `reporter_password_hash` are determined by `reporter_email`, not directly by `incident_code`
-- This chain (non-prime → non-prime) **violates 3NF**
 
 **Fix: Decompose into two tables.**
 
@@ -133,7 +115,7 @@ Create a separate `users` table to hold them.
 
 ```
 users(
-  id               ← surrogate primary key (UUID)
+  id               ← primary key (UUID)
   email            ← candidate key (UNIQUE)
   name,
   password_hash,
@@ -141,7 +123,7 @@ users(
 )
 
 incidents(
-  id               ← surrogate primary key (UUID)
+  id               ← primary key (UUID)
   incident_code    ← candidate key (UNIQUE)
   title,
   hazard_type,
@@ -157,14 +139,13 @@ incidents(
 
 No non-prime attribute now depends on another non-prime attribute in either table.
 
-**Result: Both tables are in 3NF. ✅**
+**Result: Both tables are in 3NF.**
 
 ---
 
 ## Step 5 — Boyce-Codd Normal Form (BCNF)
 
-**Rule:** Must be in 3NF AND for every functional dependency `A → B`,
-the left-hand side `A` must be a **superkey** (uniquely identifies every row).
+**Rule:**  Every determinant must be a superkey.
 
 **Check `users`:**
 
