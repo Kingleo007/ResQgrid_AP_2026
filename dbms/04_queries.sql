@@ -1,20 +1,14 @@
--- =============================================================================
 -- 04_queries.sql — All SQL queries used by the ResQGrid app
--- Each query has an ID (R1, R2 … for reads; W1, W2 … for writes).
--- $1, $2 etc. are parameter placeholders (sent by the app at runtime).
--- =============================================================================
+-- Each query has an ID 
 
 
--- ---------------------------------------------------------------------------
+
 -- READ QUERIES
--- ---------------------------------------------------------------------------
-
 
 -- R1 — READ
 -- Purpose : Login — find a user by email so the app can compare the password hash
 -- Route   : POST /api/auth/login
 -- Used by : authController.login → userModel.findByEmail
--- ---------------------------------------------------------------------------
 SELECT
     id,
     email,
@@ -28,7 +22,6 @@ WHERE email = $1;          -- $1 = email submitted in the login form
 -- Purpose : List all incidents, newest first (Incidents page)
 -- Route   : GET /api/incidents
 -- Used by : incidentController.list → incidentModel.listAll
--- ---------------------------------------------------------------------------
 SELECT
     id,
     incident_code,
@@ -48,8 +41,6 @@ ORDER BY created_at DESC;
 -- Purpose : Get one incident with the name of the user who created it (JOIN)
 -- Route   : GET /api/incidents/:id
 -- Used by : incidentController.getOne → incidentModel.findById
--- Note    : LEFT JOIN so incidents without a creator (NULL created_by) still return
--- ---------------------------------------------------------------------------
 SELECT
     i.id,
     i.incident_code,
@@ -73,7 +64,6 @@ WHERE  i.id = $1;          -- $1 = UUID from the URL /incidents/:id
 -- Purpose : Dashboard — total incident count
 -- Route   : GET /api/dashboard
 -- Used by : dashboardController.getStats
--- ---------------------------------------------------------------------------
 SELECT COUNT(*) AS total
 FROM incidents;
 
@@ -82,7 +72,6 @@ FROM incidents;
 -- Purpose : Dashboard — count of active (not resolved or closed) incidents
 -- Route   : GET /api/dashboard
 -- Used by : dashboardController.getStats
--- ---------------------------------------------------------------------------
 SELECT COUNT(*) AS active
 FROM incidents
 WHERE status NOT IN ('resolved', 'closed');
@@ -92,7 +81,6 @@ WHERE status NOT IN ('resolved', 'closed');
 -- Purpose : Dashboard — count of resolved incidents
 -- Route   : GET /api/dashboard
 -- Used by : dashboardController.getStats
--- ---------------------------------------------------------------------------
 SELECT COUNT(*) AS resolved
 FROM incidents
 WHERE status = 'resolved';
@@ -102,14 +90,12 @@ WHERE status = 'resolved';
 -- Purpose : Health check — verify the database connection is alive
 -- Route   : GET /health
 -- Used by : healthController.health
--- ---------------------------------------------------------------------------
 SELECT 1;
 
 
 -- R6 — READ  (educational)
 -- Purpose : Combine the three dashboard counts into one query using a CTE
 -- Shows   : Common Table Expression (WITH ... AS)
--- ---------------------------------------------------------------------------
 WITH counts AS (
     SELECT
         COUNT(*)                                                   AS total,
@@ -124,7 +110,6 @@ FROM counts;
 -- R7 — READ  (educational)
 -- Purpose : Rank incidents by severity within each hazard type
 -- Shows   : RANK() window function with PARTITION BY and ORDER BY inside OVER()
--- ---------------------------------------------------------------------------
 SELECT
     incident_code,
     title,
@@ -148,7 +133,6 @@ ORDER BY hazard_type, severity_rank;
 -- R8 — READ  (educational)
 -- Purpose : Running count of incidents over time
 -- Shows   : COUNT() as a running total using ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
--- ---------------------------------------------------------------------------
 SELECT
     incident_code,
     title,
@@ -162,16 +146,15 @@ FROM incidents
 ORDER BY created_at;
 
 
--- ---------------------------------------------------------------------------
+
+
 -- WRITE QUERIES
--- ---------------------------------------------------------------------------
 
 
 -- W1 — WRITE
 -- Purpose : Create a new incident
 -- Route   : POST /api/incidents
 -- Used by : incidentController.create → incidentModel.createIncident
--- ---------------------------------------------------------------------------
 INSERT INTO incidents (
     id,
     incident_code,
@@ -202,7 +185,6 @@ RETURNING id, incident_code, title, hazard_type, severity, status,
 -- Purpose : Update an incident's fields (status, title, severity etc.)
 -- Route   : PUT /api/incidents/:id
 -- Used by : incidentController.update → incidentModel.updateIncident
--- ---------------------------------------------------------------------------
 UPDATE incidents
 SET
     title         = COALESCE($2, title),         -- keep old value if NULL is passed
@@ -221,7 +203,6 @@ RETURNING id, incident_code, title, hazard_type, severity, status,
 -- Purpose : Delete an incident permanently
 -- Route   : DELETE /api/incidents/:id
 -- Used by : incidentController.remove → incidentModel.deleteIncident
--- ---------------------------------------------------------------------------
 DELETE FROM incidents
 WHERE id = $1;
 
@@ -230,7 +211,6 @@ WHERE id = $1;
 -- Purpose : Create a new user (password already bcrypt-hashed by the app)
 -- Route   : POST /api/users
 -- Used by : userController.create → userModel.createUser
--- ---------------------------------------------------------------------------
 INSERT INTO users (id, email, name, password_hash)
 VALUES (gen_random_uuid(), $1, $2, $3)
 RETURNING id, email, name, created_at;

@@ -50,7 +50,7 @@ CREATE TABLE incidents (
 
 
 
--- Indexes- makes database searches faster.
+-- Indexes- makes database searches faster = not need for small dataset as sequencial scans are fast enough
 
 -- idx_incidents_status: dashboard queries filter by status
 CREATE INDEX idx_incidents_status      ON incidents(status);
