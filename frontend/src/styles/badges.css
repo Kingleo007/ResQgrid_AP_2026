@@ -1,5 +1,5 @@
 /* frontend/src/styles/badges.css
- * Styles for SeverityBadge, StatusBadge, SampleBadge,
+ * Styles for SeverityBadge and StatusBadge,
  * and state components (EmptyState, ErrorState, LoadingSkeleton, Toast).
  */
 
@@ -68,21 +68,6 @@
 .status-badge--monitoring{ color: var(--status-monitoring); }
 .status-badge--resolved  { color: var(--status-resolved); }
 .status-badge--closed    { color: var(--status-closed); }
-
-/* ── Sample badge ────────────────────────────────── */
-.sample-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 6px;
-  border-radius: var(--radius);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  background: #E8F4FD;
-  color: #1565C0;
-  border: 1px solid #BBDEFB;
-  vertical-align: middle;
-}
 
 /* ── Empty state ─────────────────────────────────── */
 .empty-state {

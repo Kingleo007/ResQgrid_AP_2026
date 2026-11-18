@@ -58,15 +58,11 @@ backend/
 ├── db/
 │   ├── migrations/      # 001_init.sql
 │   ├── migrate.js       # Transactional migration runner (schema_migrations)
-│   └── seed.js          # Idempotent database seeder (is_sample = true)
+│   └── seed.js          # Creates the initial admin account only
 ├── scripts/
 │   ├── probe-sources.js # Probes external feeds once & logs response structure
 │   └── ingest-once.js   # CLI runner: fetch & upsert feeds (--source=<key> optional)
 └── test/
-    ├── fixtures/        # cap_sachet_sample.xml, usgs_sample.json
-    ├── auth.test.js
-    ├── incidents.test.js
-    └── ingestion.test.js
 ```
 
 ### MVC Mapping
@@ -134,7 +130,7 @@ cd backend
 cp .env.example .env                      # Configure PORT, DATABASE_URL, JWT_SECRET
 npm install
 npm run db:migrate                        # Applies 001_init.sql to PostgreSQL
-npm run db:seed                           # Seeds default users, sample teams, incidents & alerts
+npm run db:seed                           # Creates the initial admin account only
 
 # --- 3. External Feed Ingestion ---
 npm run probe:sources                     # Probe live external feeds & print response structure
@@ -142,7 +138,6 @@ npm run ingest:once                       # Run ingestion once for all enabled s
 npm run ingest:once -- --source=usgs_quakes # Run single source manually
 
 # --- 4. Testing & Running ---
-npm test                                  # Runs Vitest test suite (mocked DB, 32 unit & integration tests)
 npm run dev                               # Starts dev server with nodemon on http://localhost:4000
 npm start                                 # Starts production server with background scheduler
 ```
@@ -181,7 +176,7 @@ cd backend && npm run db:migrate && npm run db:seed
 | Edit Incident Fields | ✅ | ✅ | Authenticated |
 | Change Incident Status | ✅ | ✅ | Authenticated (`incidentService` state machine) |
 | **Reopen Resolved Incident** | ✅ | ❌ | Controller check (`req.user.role === 'admin'`) |
-| **Delete Incident** | ✅ | ❌ | `requireRole('admin')` + sample/closed rule |
+| **Delete Incident** | ✅ | ❌ | `requireRole('admin')` |
 | Add Notes to Timeline | ✅ | ✅ | Authenticated |
 | View / Assign Teams | ✅ | ✅ | Authenticated |
 | Update Assignment Status | ✅ | ✅ | Authenticated |

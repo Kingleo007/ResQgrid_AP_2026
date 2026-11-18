@@ -95,7 +95,7 @@ ResQgrid-beta/
 │   ├── prisma/
 │   │   └── schema.prisma       Database table definitions
 │   ├── db/
-│   │   └── seed.js             Populates DB with starter data
+│   │   └── seed.js             Creates the initial admin account only
 │   ├── prisma7.config.ts       Prisma 7 config — where DATABASE_URL lives for CLI
 │   └── .env                    Secret env vars (not committed to git)
 │

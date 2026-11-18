@@ -69,7 +69,6 @@ node db/seed.js
 Output:
 ```
 [seed] ✓ Admin user: admin@resqgrid.local / Admin1234!
-[seed] ✓ 5 sample incidents created
 [seed] Done ✓
 ```
 
@@ -151,7 +150,7 @@ cd frontend && npm run dev
 | `npx prisma generate` | Regenerate Prisma client after schema change |
 | `npx prisma db push` | Apply schema changes to the database |
 | `npx prisma studio` | Open a visual DB browser in your browser |
-| `node db/seed.js` | Re-seed the database (safe to run multiple times) |
+| `node db/seed.js` | Create the initial admin account only |
 
 ### Frontend
 
@@ -197,7 +196,7 @@ cd frontend && npm run dev
 → Backend is not running. Start it with `npm run dev` in `backend/`.
 
 **Login fails with 401**
-→ Seed the database first: `node db/seed.js`
+→ Create the initial admin account with `node db/seed.js`.
 
 **`DATABASE_URL` error on start**
 → Check `backend/.env` exists and the password is correct.
