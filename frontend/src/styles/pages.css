@@ -8,42 +8,72 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
-  padding: 24px;
+  background: #f3f6fa;
+  padding: 36px 24px;
+  position: relative;
+  overflow: auto;
 }
 
 .login-card {
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-modal);
-  box-shadow: var(--shadow-md);
-  padding: 40px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 18px 55px rgba(28, 48, 74, 0.09);
+  padding: 42px 44px 34px;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
 }
 
 .login-card__brand {
-  text-align: center;
-  margin-bottom: 32px;
+  text-align: left;
+  margin-bottom: 30px;
 }
 
 .login-card__logo {
-  font-size: 3rem;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 23px;
+  color: #fff;
+  background: var(--navy);
+  border-radius: 13px;
+}
+
+.login-card__logo svg { width: 30px; height: 30px; }
+
+.login-card__brand::after {
+  content: 'RESQGRID OPERATIONS';
   display: block;
-  margin-bottom: 10px;
+  margin-top: 6px;
+  color: #738095;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 
 .login-card__title {
-  font-size: var(--text-2xl);
+  font-size: clamp(1.75rem, 5vw, 2rem);
   font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 4px;
+  color: #202d40;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
 }
 
 .login-card__subtitle {
-  font-size: var(--text-sm);
+  font-size: 15px;
   color: var(--ink-muted);
+  max-width: 34ch;
 }
+
+.login-card__field { gap: 8px; margin-top: 18px; }
+.login-card__field .form-label { font-size: 14px; font-weight: 600; color: #344256; }
+.login-card__field .form-input { min-height: 49px; padding: 12px 14px; border-radius: 9px; border-color: #d9e0e9; background: #fbfcfe; font-size: 15px; }
+.login-card__field .form-input:focus { border-color: #426899; box-shadow: 0 0 0 3px rgba(31, 58, 95, 0.11); background: #fff; }
+.login-card__submit { width: 100%; justify-content: center; min-height: 50px; margin-top: 27px; border-radius: 9px; font-size: 15px; font-weight: 650; box-shadow: 0 5px 12px rgba(31, 58, 95, 0.13); }
+.login-card__submit span { margin-left: 4px; font-size: 18px; line-height: 1; }
+.login-card > form + .login-card__hint { padding-top: 22px; border-top: 1px solid #edf0f4; }
+.login-card [style*='severity-critical'] { border: 1px solid #f0c9c6; border-radius: 9px; background: #fff4f2; padding: 10px 12px; }
 
 .login-error {
   margin-top: 12px;
@@ -56,10 +86,16 @@
 }
 
 .login-card__hint {
-  margin-top: 24px;
-  text-align: center;
+  margin-top: 21px;
+  text-align: left;
   font-size: var(--text-xs);
   color: var(--ink-muted);
+}
+
+@media (max-width: 540px) {
+  .login-page { align-items: flex-start; padding: 20px 14px; }
+  .login-card { margin: auto 0; padding: 30px 22px 24px; border-radius: 16px; }
+  .login-card__brand { margin-bottom: 26px; }
 }
 
 /* ── Error / 404 / 403 pages ─────────────────────── */
@@ -109,4 +145,140 @@
 
 .form-input--error:focus {
   box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.12);
+}
+
+.incident-location-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.incident-location-fields .form-select { min-width: 0; }
+
+/* ── India incident map ──────────────────────────── */
+.india-map-card {
+  margin-top: 30px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.india-map-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.india-map-card__header h2 { font-size: 1.2rem; color: var(--ink); }
+.india-map-card__header p { margin-top: 4px; color: var(--ink-muted); font-size: var(--text-sm); }
+
+.india-map-card__summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.india-map-card__summary strong { color: var(--navy); font-size: 1.35rem; line-height: 1.1; }
+.india-map-card__message { margin: 0 0 12px; color: var(--ink-muted); font-size: var(--text-sm); }
+
+.india-map-card__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.india-map__canvas {
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e7ebf0;
+  border-radius: 12px;
+  background: #f7f9fc;
+}
+
+.india-map__leaflet { width: 100%; height: 600px; background: #f7f9fc; }
+.india-map__loading { display: grid; place-items: center; width: 100%; min-height: 600px; padding: 20px; color: var(--ink-muted); font-size: var(--text-sm); text-align: center; }
+.india-map__leaflet .leaflet-pane { z-index: 1; }
+.india-map__leaflet .leaflet-tooltip { padding: 7px 10px; border: 1px solid #e1e6ed; border-radius: 8px; color: var(--ink); font: 600 12px var(--font-sans); box-shadow: 0 4px 12px rgba(24, 43, 69, 0.12); }
+.india-map__leaflet .leaflet-tooltip::before { display: none; }
+
+.india-map__legend {
+  position: absolute;
+  z-index: 500;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  padding: 9px 12px;
+  border: 1px solid rgba(221, 226, 234, 0.9);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #596578;
+  font-size: 11px;
+  box-shadow: 0 3px 10px rgba(24, 43, 69, 0.08);
+}
+
+.india-map__legend span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.india-map__swatch { width: 11px; height: 11px; border: 1px solid rgba(31, 58, 95, 0.1); border-radius: 3px; }
+.india-map__swatch--none { background: #edf1f5; }
+.india-map__swatch--one { background: #f5c9a5; }
+.india-map__swatch--some { background: #ec8b54; }
+.india-map__swatch--many { background: #b93824; }
+
+.india-map__states { min-width: 0; display: flex; flex-direction: column; }
+.india-map__states-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0 10px; }
+.india-map__states-heading h3 { color: var(--ink); font-size: 0.9rem; }
+.india-map__states-heading button { padding: 4px 7px; border: 0; border-radius: 6px; background: transparent; color: var(--navy); font-size: 11px; cursor: pointer; }
+.india-map__states-heading button:hover { background: #edf2f8; }
+.india-map__states ul { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 540px; list-style: none; }
+
+.india-map__state {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 9px;
+  padding: 8px 9px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #4f5b6d;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.india-map__state:hover,
+.india-map__state--selected { border-color: #e2e8f0; background: #f5f8fb; color: var(--navy); }
+.india-map__state > span:nth-child(2) { flex: 1; }
+.india-map__state strong { color: var(--ink); font-size: 11px; font-variant-numeric: tabular-nums; }
+.india-map__state-dot { width: 10px; height: 10px; flex: 0 0 10px; border: 1px solid rgba(31, 58, 95, 0.12); border-radius: 3px; }
+.india-map__empty { margin: 6px 0; color: var(--ink-muted); font-size: 12px; line-height: 1.6; }
+.india-map__selection { margin-top: auto; padding: 12px 9px 0; color: var(--ink-muted); font-size: 12px; }
+.india-map-card__source { margin-top: 12px; color: #798597; font-size: 10px; }
+
+@media (max-width: 900px) {
+  .india-map-card__body { grid-template-columns: 1fr; }
+  .india-map__states ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 185px; }
+  .india-map__selection { margin-top: 8px; }
+}
+
+@media (max-width: 560px) {
+  .incident-location-fields { grid-template-columns: 1fr; }
+  .india-map-card { padding: 17px 13px; }
+  .india-map-card__header { gap: 10px; }
+  .india-map-card__header h2 { font-size: 1.05rem; }
+  .india-map-card__header p { font-size: 12px; }
+  .india-map__leaflet { height: 440px; }
+  .india-map__loading { min-height: 440px; }
+  .india-map__states ul { grid-template-columns: 1fr; }
+  .india-map__legend { left: 8px; right: 8px; bottom: 8px; justify-content: center; gap: 8px; padding: 7px; }
 }

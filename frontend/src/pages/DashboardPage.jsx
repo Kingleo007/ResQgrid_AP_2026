@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageHeader from '../layout/PageHeader.jsx';
+import IndiaIncidentMap from '../components/IndiaIncidentMap.jsx';
 
 export default function DashboardPage() {
   // stats holds the numbers returned by the backend
   const [stats, setStats]     = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
+  const [incidents, setIncidents] = useState([]);
+  const [incidentsLoading, setIncidentsLoading] = useState(true);
+  const [incidentsError, setIncidentsError] = useState('');
 
   // useEffect runs once when this page loads
   useEffect(() => {
@@ -31,6 +35,26 @@ export default function DashboardPage() {
 
     loadStats();
   }, []); // empty array = run only on first render
+
+  useEffect(() => {
+    async function loadIncidents() {
+      try {
+        const res = await fetch('/api/incidents', { credentials: 'include' });
+        if (res.status === 401) {
+          window.location.href = '/login';
+          return;
+        }
+        if (!res.ok) throw new Error('Incident request failed');
+        const data = await res.json();
+        setIncidents(Array.isArray(data) ? data : []);
+      } catch {
+        setIncidentsError('Could not load incident locations.');
+      } finally {
+        setIncidentsLoading(false);
+      }
+    }
+    loadIncidents();
+  }, []);
 
   return (
     <div className="page">
@@ -70,6 +94,12 @@ export default function DashboardPage() {
 
         </div>
       )}
+
+      <IndiaIncidentMap
+        incidents={incidents}
+        loading={incidentsLoading}
+        error={incidentsError}
+      />
 
       {/* Quick link to incidents */}
       <div style={{ marginTop: 32 }}>

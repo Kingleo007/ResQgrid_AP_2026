@@ -20,7 +20,7 @@ function App() {
       {/* Login page — public, no layout wrapper */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* All other pages use the AppShell (Sidebar + TopBar) */}
+      {/* All other pages use the app shell (sidebar + floating navigation) */}
       <Route path="/" element={<AppShell />}>
 
         {/* Redirect root → dashboard */}

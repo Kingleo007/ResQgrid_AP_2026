@@ -2,6 +2,25 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '../layout/PageHeader.jsx';
 
+const STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa',
+  'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala',
+  'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland',
+  'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+  'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+];
+
+const UNION_TERRITORIES = [
+  { value: 'Andaman and Nicobar Islands', label: 'Andaman and Nicobar Islands' },
+  { value: 'Chandigarh', label: 'Chandigarh' },
+  { value: 'Dadra and Nagar Haveli and Daman and Diu', label: 'Dadra & Nagar Haveli, Daman & Diu' },
+  { value: 'Delhi', label: 'Delhi' },
+  { value: 'Jammu and Kashmir', label: 'Jammu and Kashmir' },
+  { value: 'Ladakh', label: 'Ladakh' },
+  { value: 'Lakshadweep', label: 'Lakshadweep' },
+  { value: 'Puducherry', label: 'Puducherry' },
+];
+
 export default function NewIncidentPage() {
   const navigate = useNavigate();
 
@@ -10,7 +29,8 @@ export default function NewIncidentPage() {
     title: '',
     hazardType: 'other',
     severity: 'moderate',
-    locationName: '',
+    city: '',
+    state: '',
     description: '',
   });
 
@@ -28,12 +48,14 @@ export default function NewIncidentPage() {
     setLoading(true);
 
     try {
+      const { city, state, ...incidentFields } = form;
+      const locationName = [city.trim(), state].filter(Boolean).join(', ');
       // POST the form data to the backend
       const res = await fetch('/api/incidents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...incidentFields, locationName }),
       });
 
       if (res.ok) {
@@ -114,17 +136,40 @@ export default function NewIncidentPage() {
         </div>
 
         {/* Location */}
-        <div className="form-group" style={{ marginTop: 16 }}>
-          <label className="form-label" htmlFor="locationName">Location</label>
-          <input
-            id="locationName"
-            name="locationName"
-            type="text"
-            className="form-input"
-            placeholder="e.g. Guwahati, Assam"
-            value={form.locationName}
-            onChange={handleChange}
-          />
+        <div className="incident-location-fields" style={{ marginTop: 16 }}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="city">City</label>
+            <input
+              id="city"
+              name="city"
+              type="text"
+              className="form-input"
+              autoComplete="off"
+              placeholder="e.g. Guwahati"
+              value={form.city}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label" htmlFor="state">State / UT</label>
+            <select
+              id="state"
+              name="state"
+              className="form-select"
+              value={form.state}
+              onChange={handleChange}
+            >
+              <option value="">Select a state or UT</option>
+              <optgroup label="States">
+                {STATES.map((state) => <option key={state} value={state}>{state}</option>)}
+              </optgroup>
+              <optgroup label="Union territories">
+                {UNION_TERRITORIES.map((territory) => (
+                  <option key={territory.value} value={territory.value}>{territory.label}</option>
+                ))}
+              </optgroup>
+            </select>
+          </div>
         </div>
 
         {/* Description */}

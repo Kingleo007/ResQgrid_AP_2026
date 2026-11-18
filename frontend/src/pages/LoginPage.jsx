@@ -48,9 +48,9 @@ export default function LoginPage() {
 
         {/* Brand */}
         <div className="login-card__brand">
-          <span className="login-card__logo" aria-hidden="true">🛡️</span>
-          <h1 className="login-card__title">ResQGrid</h1>
-          <p className="login-card__subtitle">Disaster Response Administration</p>
+          <span className="login-card__logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 26 7v8.2c0 6.2-4.2 10.8-10 13.3C10.2 26 6 21.4 6 15.2V7l10-3.5Z" stroke="currentColor" strokeWidth="1.8"/><path d="m11.7 15.8 2.8 2.8 5.9-6.3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
+          <h1 className="login-card__title">Welcome back</h1>
+          <p className="login-card__subtitle">Sign in to your ResQGrid response workspace.</p>
         </div>
 
         {/* Error message (only shown if login fails) */}
@@ -63,8 +63,8 @@ export default function LoginPage() {
         {/* Login form */}
         <form onSubmit={handleSubmit} noValidate>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">Email address</label>
+          <div className="form-group login-card__field">
+            <label className="form-label" htmlFor="email">Work email</label>
             <input
               id="email"
               type="email"
@@ -78,7 +78,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="form-group" style={{ marginTop: 16 }}>
+          <div className="form-group login-card__field">
             <label className="form-label" htmlFor="password">Password</label>
             <input
               id="password"
@@ -93,16 +93,15 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="btn btn-primary"
-            style={{ marginTop: 24, width: '100%', justifyContent: 'center' }}
+            className="btn btn-primary login-card__submit"
             disabled={loading} // can't click again while request is in flight
           >
-            {loading ? 'Signing in…' : 'Sign in'}
+            {loading ? 'Signing in…' : <>Sign in <span aria-hidden="true">→</span></>}
           </button>
 
         </form>
 
-        <p className="login-card__hint">Gov-only system. Authorised personnel only.</p>
+        <p className="login-card__hint">Authorised personnel only.</p>
 
       </div>
     </div>
