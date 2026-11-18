@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { prisma } from '../db/prisma.js';
 import authenticate from '../middleware/authenticate.js';
 import { validate } from '../middleware/validate.js';
-import { createIncidentSchema, updateIncidentSchema } from '../validators/incidentValidator.js';
+import { createIncidentSchema, updateIncidentSchema } from '../validators/validators.js';
 
 const router = Router();
 router.use(authenticate);

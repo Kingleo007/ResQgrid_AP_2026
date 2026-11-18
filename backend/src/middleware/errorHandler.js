@@ -1,4 +1,3 @@
-import { logger } from '../utils/logger.js';
 import { config } from '../config/env.js';
 
 export function errorHandler(err, req, res, next) {
@@ -11,14 +10,14 @@ export function errorHandler(err, req, res, next) {
   // Map JWT errors
   if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') status = 401;
 
-  // Log 5xx errors with full detail (never log to production stdout in 4xx — noise)
+  // Keep unexpected server errors visible in the backend terminal.
   if (status >= 500) {
-    logger.error('[errorHandler] Internal server error', {
-      method:  req.method,
-      path:    req.path,
+    console.error('[errorHandler] Internal server error', {
+      method: req.method,
+      path: req.path,
       status,
       message: err.message,
-      stack:   config.nodeEnv !== 'production' ? err.stack : undefined,
+      stack: config.nodeEnv !== 'production' ? err.stack : undefined,
     });
   }
 

@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser';
 
 import { config } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { logger } from './utils/logger.js';
 
 import incidentRoutes  from './routes/incidents.js';
 import { authRouter, usersRouter } from './routes/users.js';
@@ -39,32 +38,27 @@ app.use('/api',           incidentRoutes);
 
 app.use('/api/users',     usersRouter);      // create users
 
-// ---------------------------------------------------------------------------
+
 // 404 — route not found
-// ---------------------------------------------------------------------------
 app.use((req, res) => {
   res.status(404).json({
     error: { code: 'NOT_FOUND', message: `Route ${req.method} ${req.path} not found` },
   });
 });
 
-// ---------------------------------------------------------------------------
-// Centralized error handler (must be last — 4-argument signature)
-// ---------------------------------------------------------------------------
+
+// Centralized error handler
 app.use(errorHandler);
 
 // Start the HTTP server from this file.
 const server = app.listen(config.port, () => {
-  logger.info(`[server] ResQGrid API running on http://localhost:${config.port}`, {
-    port: config.port,
-    nodeEnv: config.nodeEnv,
-  });
+  console.log(`ResQGrid API running on http://localhost:${config.port}`);
 });
 
 // Close cleanly when the process is stopped.
 for (const signal of ['SIGTERM', 'SIGINT']) {
   process.once(signal, () => {
-    logger.info(`[server] ${signal} received — shutting down`);
+    console.log(`${signal} received — shutting down`);
     server.close(() => process.exit(0));
   });
 }

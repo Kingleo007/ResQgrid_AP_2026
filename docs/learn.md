@@ -30,7 +30,6 @@ The frontend sends an HTTP request. The backend receives it, checks it, performs
 | --- | --- |
 | backend/src/controllers/ | Uses async functions and await while asking models or Prisma for data. |
 | backend/src/models/ | Uses asynchronous Prisma calls to query PostgreSQL. |
-| backend/src/middleware/requestLogger.js | Registers a callback for the response finish event; logs after the response is sent. |
 | backend/src/server.js | Registers a callback for SIGTERM so the server can shut down cleanly. |
 
 V8 and libuv are part of the Node.js runtime; this project does not configure them directly. The database calls are the main example of asynchronous, non-blocking work here.
@@ -125,7 +124,6 @@ Example: routes/incidents.js selects incidentController.create; that controller 
 
 | File or folder | Role in this topic |
 | --- | --- |
-| backend/src/middleware/requestLogger.js | Uses res.on('finish', callback) to react when a response finishes. |
 | backend/src/server.js | Uses process.on('SIGTERM', callback) to react to a shutdown signal. |
 | backend/src/controllers/ and backend/src/models/ | Use async functions for database operations. |
 
@@ -191,7 +189,7 @@ Login flow: validated email/password → user lookup → bcrypt comparison → J
     │   ├── models/                   Prisma-backed database operations
     │   ├── db/                       Shared Prisma client and pool setup
     │   ├── services/                 Business logic files (currently not used by routes)
-    │   └── utils/                    Shared helpers such as logging
+    │   └── map/                      Geographic and hazard mapping helpers
     ├── prisma/
     │   └── schema.prisma             Database model definitions
     ├── prisma7.config.ts             Prisma command-line configuration

@@ -176,7 +176,6 @@ cd frontend && npm run dev
 | PUT | `/api/incidents/:id` | Update an incident | Yes |
 | DELETE | `/api/incidents/:id` | Delete an incident | Yes |
 | POST | `/api/users` | Create a new user (bcrypt hashed) | Yes |
-| GET | `/health` | Server alive check | No |
 
 ---
 

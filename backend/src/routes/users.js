@@ -4,11 +4,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../db/prisma.js';
 import { config } from '../config/env.js';
-import { logger } from '../utils/logger.js';
 import authenticate from '../middleware/authenticate.js';
 import { validate } from '../middleware/validate.js';
 import { loginSchema } from '../validators/authValidator.js';
-import { createUserSchema } from '../validators/userValidator.js';
+import { createUserSchema } from '../validators/validators.js';
 
 export const authRouter = Router();
 export const usersRouter = Router();
@@ -32,7 +31,6 @@ authRouter.post('/login', validate(loginSchema), async (req, res, next) => {
       secure: config.nodeEnv === 'production',
       maxAge: 8 * 60 * 60 * 1000,
     });
-    logger.info('[auth] Login success', { userId: user.id });
     res.status(200).json({ user: { id: user.id, name: user.name, email: user.email } });
   } catch (err) { next(err); }
 });
