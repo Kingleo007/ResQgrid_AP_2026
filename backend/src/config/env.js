@@ -1,7 +1,4 @@
-// =============================================================================
-// src/config/env.js — Environment variables for ResQGrid backend
-// Reads from .env file (via dotenv). Fails fast if required vars are missing.
-// =============================================================================
+// Environment variables for ResQGrid backend
 
 import 'dotenv/config';
 

@@ -86,13 +86,6 @@ FROM incidents
 WHERE status = 'resolved';
 
 
--- R5 — READ
--- Purpose : Health check — verify the database connection is alive
--- Route   : GET /health
--- Used by : healthController.health
-SELECT 1;
-
-
 -- R6 — READ  (educational)
 -- Purpose : Combine the three dashboard counts into one query using a CTE
 -- Shows   : Common Table Expression (WITH ... AS)

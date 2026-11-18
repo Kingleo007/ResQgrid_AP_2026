@@ -1,16 +1,4 @@
-// =============================================================================
-// src/config/hazardMap.js — Keyword-based hazard type classifier for ResQGrid
-// Maps free-text event descriptions from external feeds to the internal
-// hazard_type enum: flood|cyclone|earthquake|landslide|fire|heatwave|storm|drought|other
-// =============================================================================
 
-/**
- * Maps an event text string to a ResQGrid hazard_type enum value.
- * Matching is case-insensitive and keyword-based (first match wins).
- *
- * @param {string} eventText - Free-text event description from an external feed
- * @returns {'flood'|'cyclone'|'earthquake'|'landslide'|'fire'|'heatwave'|'storm'|'drought'|'other'}
- */
 export function mapHazard(eventText) {
   if (!eventText || typeof eventText !== 'string') return 'other';
 
