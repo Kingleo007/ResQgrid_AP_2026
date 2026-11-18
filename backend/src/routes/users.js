@@ -7,7 +7,7 @@ import { config } from '../config/env.js';
 import authenticate from '../middleware/authenticate.js';
 import { validate } from '../middleware/validate.js';
 import { validateLogin } from '../validators/authValidator.js';
-import { createUserSchema } from '../validators/validators.js';
+import { validateCreateUser } from '../validators/validators.js';
 
 export const authRouter = Router();
 export const usersRouter = Router();
@@ -47,7 +47,7 @@ authRouter.get('/me', authenticate, (req, res) => {
 });
 
 // Create user: POST /api/users (requires login)
-usersRouter.post('/', authenticate, validate(createUserSchema), async (req, res, next) => {
+usersRouter.post('/', authenticate, validate(validateCreateUser), async (req, res, next) => {
   try {
     const passwordHash = await bcrypt.hash(req.body.password, 10);
     const existing = await prisma.user.findFirst({ where: { email: req.body.email } });

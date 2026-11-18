@@ -1,13 +1,3 @@
-# Backend File Summary
-
-This is a simple guide to what each backend file does and how the main files work together.
-
-## How a request travels
-
-The frontend sends a request → `src/app.js` receives it → a route in `src/routes/` matches it → middleware checks login or input → the route handler runs the feature logic → Prisma talks to PostgreSQL → the backend sends a response to the frontend.
-
-## Backend root files
-
 | File | What it does |
 | --- | --- |
 | `backend/package.json` | Lists backend packages and commands. `npm run dev` starts `src/app.js` with automatic restarts; `npm start` starts it normally. The other scripts manage Prisma and database setup. |
@@ -28,9 +18,9 @@ The frontend sends a request → `src/app.js` receives it → a route in `src/ro
 | `routes/users.js` | Contains login, logout, current-user, and user-creation endpoints, including their Prisma and password handling. |
 | `middleware/authenticate.js` | Checks the JWT cookie on protected routes. If valid, it makes the user's details available as `req.user`; otherwise it returns an authentication error. |
 | `middleware/errorHandler.js` | Converts errors passed by routes into JSON responses with an HTTP status. Unexpected server errors are also printed in the backend terminal. |
-| `middleware/validate.js` | Runs a validation function before a route handler. Invalid request bodies receive a 400 response. It supports both native validators and schemas that use `safeParse`. |
+| `middleware/validate.js` | Runs a validation function before a route handler. If it reports invalid input, the middleware returns a 400 response with the reason. |
 | `validators/authValidator.js` | Plain JavaScript checks for login email and password. |
-| `validators/validators.js` | Zod schemas for incident creation/update and user creation. |
+| `validators/validators.js` | Plain JavaScript checks for creating and updating incidents and creating users. |
 | `map/geo.js` | Geographic helper functions: calculates a polygon centre and converts CAP coordinate text to GeoJSON. |
 | `config/hazardMap.js` | Converts hazard description text into a hazard category. |
 | `config/severityMaps.js` | Converts earthquake magnitude or external alert levels into ResQGrid severity labels. |

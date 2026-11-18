@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { prisma } from '../db/prisma.js';
 import authenticate from '../middleware/authenticate.js';
 import { validate } from '../middleware/validate.js';
-import { createIncidentSchema, updateIncidentSchema } from '../validators/validators.js';
+import { validateCreateIncident, validateUpdateIncident } from '../validators/validators.js';
 
 const router = Router();
 router.use(authenticate);
@@ -53,7 +53,7 @@ router.get('/incidents', async (req, res, next) => {
 });
 
 // Create incident: POST /api/incidents
-router.post('/incidents', validate(createIncidentSchema), async (req, res, next) => {
+router.post('/incidents', validate(validateCreateIncident), async (req, res, next) => {
   try {
     const incident = await prisma.incident.create({
       data: {
@@ -80,7 +80,7 @@ router.get('/incidents/:id', async (req, res, next) => {
 });
 
 // Update incident: PUT /api/incidents/:id
-router.put('/incidents/:id', validate(updateIncidentSchema), async (req, res, next) => {
+router.put('/incidents/:id', validate(validateUpdateIncident), async (req, res, next) => {
   try {
     const data = {};
     for (const field of ['title', 'hazardType', 'severity', 'status', 'description', 'locationName']) {
