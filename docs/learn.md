@@ -1,219 +1,202 @@
-# ResQGrid Backend — Presentation Script
+# ResQGrid Backend: Topics and Code Map
 
-This guide is a simple speaking script for explaining the backend to beginners. It follows the topics in the class screenshots and connects each topic to the files in this project.
+This is a reference for learning the backend. For each topic, it explains the idea in plain language, points to the related files, and says what each file does in ResQGrid.
+
+## How the backend fits together
+
+The frontend sends an HTTP request. The backend receives it, checks it, performs work, and sends back a response. When saved data is needed, the backend uses Prisma to communicate with PostgreSQL.
+
+    Frontend → server.js → app.js → middleware → route → controller → model → Prisma → PostgreSQL
+                                                            response ← controller ← data ← database
 
 ## 1. Backend development and client-server architecture
 
-**Say:** “ResQGrid uses a client-server design. The frontend is the client: it shows pages and sends requests. The backend is a Node.js server: it receives those requests, checks them, reads or changes data, and sends a response. PostgreSQL stores the long-term data.”
+**Topic:** The client is the program that asks for something. The server receives the request and responds. In ResQGrid, the frontend is the client, the Node.js backend is the server, and PostgreSQL stores application data.
 
-For example, when a user opens the incidents page, the frontend asks the backend for incidents. The backend reads incident rows from PostgreSQL and returns JSON. The frontend then displays that JSON.
-
-**Files to point to:**
-
-- `backend/src/server.js` starts the HTTP server.
-- `backend/src/app.js` creates the Express application and connects middleware and routes.
-- `backend/src/routes/` maps URL paths and HTTP methods to controller functions.
-- `backend/src/controllers/` handles each request and prepares a response.
-- `backend/src/models/` contains database queries.
-- `backend/src/db/prisma.js` creates the shared Prisma database client.
-- `backend/prisma/schema.prisma` describes the database tables and fields.
-
-## 2. Node.js, HTTP server, and request flow
-
-**Say:** “Node.js runs JavaScript outside the browser. ResQGrid uses Express, a Node.js library that makes it easier to build an HTTP server. The server listens on the port in the environment settings, which is 4000 by default.”
-
-The frontend sends an HTTP request. It has a method, a URL, headers, and sometimes a body. The backend matches the method and URL to a route, runs middleware and a controller, then returns an HTTP status and usually JSON.
-
-**Files to point to:**
-
-- `backend/src/server.js` calls `app.listen(...)` and handles `SIGTERM` for a graceful shutdown.
-- `backend/src/config/env.js` reads settings such as `PORT`, `DATABASE_URL`, `JWT_SECRET`, and `CLIENT_ORIGIN`.
-- `backend/src/app.js` registers Express middleware and mounts the routes.
-
-### HTTP methods and URL parts
-
-An HTTP method describes what the client wants to do. In this API:
-
-- `GET /api/incidents` reads the incident list.
-- `POST /api/incidents` creates an incident; its fields are sent in the request body.
-- `GET /api/incidents/:id` reads one incident. `:id` is a route parameter, for example `/api/incidents/abc123`.
-- `PUT /api/incidents/:id` updates an incident.
-- `DELETE /api/incidents/:id` removes an incident.
-- `POST /api/auth/login` checks login details.
-
-In a URL such as `http://localhost:4000/api/incidents/abc123?view=full`, the protocol is `http`, the host is `localhost`, the port is `4000`, the path is `/api/incidents/abc123`, and the query string is `view=full`. The current incident routes use a path parameter (`:id`); they do not define query-string filters.
-
-### Headers, request bodies, and status codes
-
-Headers carry information about a request or response, such as its content type or authentication cookie. `express.json()` in `app.js` reads JSON request bodies and makes the data available as `req.body`. `cookieParser()` reads cookies and makes them available as `req.cookies`.
-
-The backend uses common HTTP status codes:
-
-- `200` means the request succeeded.
-- `201` means a new resource was created.
-- `204` means it succeeded and has no response body (used after deleting an incident).
-- `400` means the submitted data is invalid.
-- `401` means login is missing or invalid.
-- `404` means the route or incident was not found.
-- `409` means the email is already in use.
-- `500` means an unexpected server error occurred.
-
-## 3. Express routing and REST API
-
-**Say:** “A route connects an HTTP method and URL to the code that handles it. ResQGrid groups routes by feature, then `app.js` mounts each group under a common path. This keeps the API organized.”
-
-| URL prefix | Route file | What it provides |
-| --- | --- | --- |
-| `/health` and `/api/health` | `backend/src/routes/health.js` | Checks that the server can reach the database; no login required. |
-| `/api/auth` | `backend/src/routes/auth.js` | Login, logout, and current-user endpoints. |
-| `/api/incidents` | `backend/src/routes/incidents.js` | Create, read, update, and delete incidents. All these routes require login. |
-| `/api/dashboard` | `backend/src/routes/dashboard.js` | Returns incident counts; requires login. |
-| `/api/users` | `backend/src/routes/users.js` | Creates a user; requires login. |
-
-The route prefix is added in `backend/src/app.js`. For example, `router.post('/login', ...)` in `auth.js` becomes `POST /api/auth/login` because the router is mounted at `/api/auth`.
-
-This is a REST-style API: URLs name resources such as `incidents`, while HTTP methods say what to do with them. The project currently uses `/api/...` prefixes; it does not use a numbered version such as `/api/v1`.
-
-## 4. Middleware and MVC-style organization
-
-**Say:** “Middleware is code that runs while a request travels through the server. It can prepare the request, check it, or stop it with an error. We organize the backend in a way similar to MVC: routes receive requests, controllers handle the request/response work, and models access stored data.”
-
-This is a practical MVC-style separation, not a full separate view layer. The frontend is the view; this backend returns JSON.
-
-The request pipeline in `backend/src/app.js` is:
-
-1. `helmet()` adds common security headers.
-2. `cors(...)` allows the configured frontend origin to make requests with cookies.
-3. `express.json()` parses JSON request bodies.
-4. `cookieParser()` parses browser cookies.
-5. `requestLogger` records the method, path, status, and response time.
-6. The matching route runs; routes may run authentication and validation middleware first.
-7. If no route matches, the app returns a JSON `404` response.
-8. `errorHandler` formats errors in one place. It is registered last so it can handle errors passed through Express.
-
-**Files to point to:**
-
-- `backend/src/middleware/validate.js` checks a body using a Zod schema.
-- `backend/src/middleware/authenticate.js` checks the JWT cookie and attaches the user to `req.user`.
-- `backend/src/middleware/requestLogger.js` records request details when the response finishes.
-- `backend/src/middleware/errorHandler.js` turns errors into JSON responses.
-- `backend/src/utils/logger.js` prints structured log messages and redacts sensitive fields.
-
-## 5. Request validation
-
-**Say:** “The server should not assume that data from a browser is correct. Before a controller saves input, validation middleware checks that the required fields and values have the right shape.”
-
-The schemas live in `backend/src/validators/`:
-
-- `authValidator.js` checks that login includes an email and password.
-- `incidentValidator.js` checks incident fields such as title, hazard type, severity, and status.
-- `userValidator.js` checks name, email, and password when creating a user.
-
-The `validate(schema)` middleware returns a `400` response with validation details if the input is invalid. If it is valid, the parsed data replaces `req.body` and the request continues to the controller.
-
-## 6. Controllers and models
-
-**Say:** “A controller coordinates one API action. It reads the request, calls a model or database query, and sends the HTTP response. A model contains the database operations so controllers do not need to write SQL or Prisma queries directly.”
-
-| File | Responsibility |
+| File or folder | Role in this topic |
 | --- | --- |
-| `backend/src/controllers/authController.js` | Looks up a user, checks the password, creates or clears the login cookie, and returns the current user. |
-| `backend/src/controllers/incidentController.js` | Handles incident list, detail, create, update, and delete requests. |
-| `backend/src/controllers/dashboardController.js` | Counts total, active, and resolved incidents. |
-| `backend/src/controllers/userController.js` | Hashes a new user's password and asks the user model to create the record. |
-| `backend/src/controllers/healthController.js` | Runs a small database query and reports whether the service is healthy. |
-| `backend/src/models/incidentModel.js` | Reads and changes incident rows through Prisma; generates an incident code for new incidents. |
-| `backend/src/models/userModel.js` | Finds and creates users through Prisma; excludes password hashes from normal user responses. |
+| backend/src/server.js | Starts the backend server and listens for requests. |
+| backend/src/app.js | Sets up Express, middleware, routes, and error handling. |
+| backend/src/routes/ | Defines which URLs and methods the server accepts. |
+| backend/src/controllers/ | Handles each request and creates its response. |
+| backend/src/models/ | Reads and writes application data. |
+| backend/src/db/prisma.js | Connects application code to the database through Prisma. |
 
-The model functions are asynchronous because they wait for PostgreSQL. Controllers use `await` and pass failures to `next(err)`, where the central error handler can respond.
+## 2. Node.js, the event loop, V8, libuv, and asynchronous work
 
-## 7. Database, Prisma ORM, and connection pooling
+**Topic:** Node.js runs JavaScript on the server. V8 runs the JavaScript code. The event loop and libuv help Node handle waiting work, such as database or network operations, while it can continue processing other work. async and await let the code work with these operations without blocking the server while it waits.
 
-**Say:** “PostgreSQL is the database. Prisma is an ORM, which means it lets JavaScript code work with database tables through objects and methods. The Prisma schema describes the data model, and the generated Prisma client provides methods such as `prisma.incident.findMany()`.”
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/controllers/ | Uses async functions and await while asking models or Prisma for data. |
+| backend/src/models/ | Uses asynchronous Prisma calls to query PostgreSQL. |
+| backend/src/middleware/requestLogger.js | Registers a callback for the response finish event; logs after the response is sent. |
+| backend/src/server.js | Registers a callback for SIGTERM so the server can shut down cleanly. |
 
-The main database files are:
+V8 and libuv are part of the Node.js runtime; this project does not configure them directly. The database calls are the main example of asynchronous, non-blocking work here.
 
-- `backend/prisma/schema.prisma` describes the `User` and `Incident` models. Prisma maps these to the `users` and `incidents` tables.
-- `backend/prisma7.config.ts` tells Prisma where the schema and migrations are and supplies the database URL from the environment.
-- `backend/src/db/prisma.js` builds one shared Prisma client. It creates a PostgreSQL connection pool using `pg`, then connects that pool to Prisma through the Prisma PostgreSQL adapter.
-- `backend/src/models/userModel.js` and `backend/src/models/incidentModel.js` use the shared client for database queries.
-- `backend/db/seed.js` creates the initial administrator account if it does not already exist. It is run explicitly with `npm run db:seed`; starting the server does not seed data automatically.
+## 3. Node.js modules, process, fs, and path
 
-A connection pool keeps a reusable set of database connections. This avoids opening a brand-new database connection for every query. The Prisma 7 adapter in `src/db/prisma.js` connects Prisma to the `pg` pool.
+**Topic:** Modules split code into files that can import and export functions or values. Node also provides built-in modules for interacting with the running process and the file system.
 
-The current schema has two models: `User` and `Incident`. It does not declare Prisma relations between them. Fields such as IDs and timestamps describe each record, and `@map`/`@@map` connect JavaScript-friendly names to database column or table names.
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/package.json | Sets type to module, so backend JavaScript uses ES module import and export. |
+| Files throughout backend/src/ | Import and export code to share responsibilities between modules. |
+| backend/src/config/env.js | Reads environment settings from process.env. |
+| backend/src/server.js | Uses process.on('SIGTERM', ...) to respond to a shutdown signal. |
 
-## 8. Authentication: password, JWT, cookie, and middleware
+fs is Node's file-system module and path helps create safe file paths. Neither is imported in the current backend request flow, so they are general Node topics rather than active ResQGrid features.
 
-**Say:** “When a user logs in, the server checks the password against a saved bcrypt hash. If it matches, the server signs a JWT and sends it in an HTTP-only cookie. On later protected requests, middleware reads and verifies that cookie before allowing the route to continue.”
+## 4. Client-server communication, HTTP, methods, and status codes
 
-The flow is:
+**Topic:** HTTP is the format the client and server use to communicate. A request has a method, URL, headers, and sometimes a body. A response has a status code, headers, and sometimes a body.
 
-1. `POST /api/auth/login` sends email and password in JSON.
-2. `authValidator.js` checks the input.
-3. `authController.js` uses `userModel.findByEmail()` and `bcrypt.compare()`.
-4. If credentials match, `jsonwebtoken` signs a token using `JWT_SECRET`.
-5. The token is returned in a cookie named `token`. The cookie is `httpOnly`, so browser JavaScript cannot read it.
-6. Protected routes run `authenticate.js`. It verifies the token and adds its user details to `req.user`.
-7. `POST /api/auth/logout` clears the cookie; `GET /api/auth/me` returns the authenticated user's details.
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/server.js | Opens the HTTP server on the configured port. |
+| backend/src/app.js | Parses JSON bodies, configures CORS, mounts routes, and returns a JSON 404 when no route matches. |
+| backend/src/routes/ | Connects HTTP methods and URL paths to handlers. |
+| backend/src/controllers/ | Reads request values and sends responses with status codes and JSON. |
+| backend/src/middleware/errorHandler.js | Sends error responses with an appropriate status and JSON body. |
 
-The browser sends the cookie back with requests when the frontend uses credentials. `app.js` enables credentialed CORS for the configured frontend origin. This project uses JWT-in-a-cookie authentication; it does not implement a server-side session store.
+Methods used by the API include GET to read, POST to create or submit, PUT to update, and DELETE to remove. Examples include GET /api/incidents, POST /api/incidents, PUT /api/incidents/:id, and DELETE /api/incidents/:id.
 
-## 9. Event-driven programming, EventEmitter, streams, and async work
+Status codes used include 200 (success), 201 (created), 204 (success with no body), 400 (invalid input), 401 (not authenticated), 404 (not found), 409 (conflict), and 500 (server error).
 
-**Say:** “Node.js is event-driven. Instead of waiting idly for slow work such as a database query, it can work on other requests and continue when the database result is ready. In our code, `async` functions and `await` make this non-blocking work easier to read.”
+## 5. HTTP routing, URL parts, headers, and request bodies
 
-Examples in this backend:
+**Topic:** Routing means choosing code based on a request's method and URL. A URL has parts such as protocol, host, port, path, and optional query string. Headers carry extra request or response information. A body carries submitted data, often as JSON.
 
-- Database operations in models and controllers use asynchronous Prisma calls.
-- `requestLogger.js` listens for the response `finish` event with `res.on('finish', ...)` and logs after the response is sent.
-- `server.js` listens for the process `SIGTERM` event so the server can stop accepting requests and close cleanly.
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/app.js | Uses express.json() to parse JSON bodies and cookieParser() to parse cookies. Mounts route folders under URL prefixes. |
+| backend/src/routes/ | Defines route paths and methods. :id in incident routes is a path parameter. |
+| backend/src/controllers/ | Reads req.body, req.params, cookies, and sends response status/body. |
+| backend/src/config/env.js | Provides CLIENT_ORIGIN; app.js uses it to configure CORS. |
 
-Node.js uses the V8 JavaScript engine to run JavaScript and uses libuv to help manage asynchronous I/O and events. These are Node.js runtime internals; this project does not configure V8 or libuv directly. The backend does not currently use Node.js streams explicitly for application data.
+For example, router.get('/:id', ...) in routes/incidents.js combined with the /api/incidents prefix in app.js handles GET /api/incidents/<id>. The current routes do not implement query-string filtering.
 
-## 10. Node.js modules: `process`, `fs`, and `path`
+## 6. Express, requests, responses, static routes, and route parameters
 
-**Say:** “Node provides built-in modules for interacting with the running process and filesystem. This backend uses process information for configuration and shutdown. It does not currently import the `fs` or `path` modules in the application code.”
+**Topic:** Express is the Node.js web framework used to define routes and middleware. A handler receives req (request) and res (response). A route parameter is a named value in the path, such as :id.
 
-- `process.env` is used by `backend/src/config/env.js` and the Prisma setup to read environment variables.
-- `process.on('SIGTERM', ...)` in `backend/src/server.js` handles a shutdown event.
-- `fs` is Node's file-system module and `path` helps build operating-system-safe file paths; neither is currently part of the backend request flow.
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/app.js | Creates the Express app and installs global middleware and route groups. |
+| backend/src/routes/ | Defines Express routers and endpoint paths. |
+| backend/src/controllers/ | Uses req to read input and res to return JSON, status codes, or an empty response. |
+| backend/src/middleware/ | Runs shared request/response logic before or after route handlers. |
 
-## 11. End-to-end example: creating an incident
+The backend does not currently serve static files with Express express.static(). The frontend is served separately; this API mainly returns JSON.
 
-**Say:** “Here is the full path for a real request. The logged-in frontend sends a POST request with incident fields. Express parses its JSON and cookie. The incidents router checks the login and validates the body. The controller asks the incident model to create the row. Prisma sends the database operation through the PostgreSQL adapter and pool. The controller returns the new incident as JSON with status 201.”
+## 7. Express Router, REST APIs, resources, and API versioning
 
-In code, follow this chain:
+**Topic:** A router groups related endpoints. In a REST-style API, the URL usually names a resource and the HTTP method describes the operation. API versioning can add a prefix such as /v1 when versions are needed.
 
-`backend/src/app.js` → `backend/src/routes/incidents.js` → `backend/src/middleware/authenticate.js` → `backend/src/middleware/validate.js` → `backend/src/controllers/incidentController.js` → `backend/src/models/incidentModel.js` → `backend/src/db/prisma.js` → PostgreSQL.
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/routes/auth.js | Groups login, logout, and current-user endpoints. |
+| backend/src/routes/incidents.js | Groups incident create, read, update, and delete endpoints. |
+| backend/src/routes/dashboard.js | Defines the dashboard statistics endpoint. |
+| backend/src/routes/users.js | Defines user creation. |
+| backend/src/routes/health.js | Defines health-check endpoints. |
+| backend/src/app.js | Mounts each router under /api/auth, /api/incidents, etc. |
 
-If something fails, the controller passes the error to Express, and `backend/src/middleware/errorHandler.js` formats the response.
+The project has an /api prefix but no numbered API version such as /api/v1.
 
-## 12. Quick backend file map
+## 8. MVC architecture and the role of each layer
 
-```text
-backend/
-├── src/
-│   ├── server.js                 Starts the HTTP server
-│   ├── app.js                    Middleware, route mounting, 404, error handler
-│   ├── config/env.js             Reads and checks environment variables
-│   ├── db/prisma.js              Shared Prisma client and PostgreSQL pool
-│   ├── routes/                   Maps HTTP methods and URLs to handlers
-│   ├── controllers/              Reads requests and sends responses
-│   ├── middleware/               Authentication, validation, logging, errors
-│   ├── validators/               Zod rules for request bodies
-│   ├── models/                   Database queries
-│   └── utils/logger.js           Structured, sanitized logging
-├── prisma/
-│   └── schema.prisma             Database models and field mappings
-├── prisma7.config.ts             Prisma CLI configuration
-└── db/seed.js                   Creates the initial admin account when run
-```
+**Topic:** MVC stands for Model, View, Controller. Models handle data, controllers coordinate requests and responses, and views display information. ResQGrid follows a similar separation for its API, with the frontend providing the view. Routes and middleware are additional Express layers that direct and check requests.
 
-## 13. A note about files not in the active request flow
+| MVC/API part | ResQGrid files | Role |
+| --- | --- | --- |
+| Model | backend/src/models/ | Queries and changes database records. |
+| View | Frontend application | Displays the JSON data returned by the backend. There is no server-rendered view folder in this backend. |
+| Controller | backend/src/controllers/ | Reads request input, calls models or Prisma, and sends the response. |
+| Route | backend/src/routes/ | Connects a URL and HTTP method to middleware and a controller. |
+| Middleware | backend/src/middleware/ | Performs reusable checks and processing around route handlers. |
 
-`backend/src/services/incidentService.js` and the hazard/severity mapping files are present in the source tree, but the current incident routes and controllers do not import them. The active incident route flow goes directly from `incidentController.js` to `incidentModel.js`. Treat those files as inactive code unless they are connected to routes later.
+Example: routes/incidents.js selects incidentController.create; that controller calls incidentModel.createIncident; the model writes the record through Prisma.
 
-## Closing summary
+## 9. Event-driven programming, EventEmitter, observer pattern, and streams
 
-**Say:** “ResQGrid's backend is an Express API running on Node.js. Routes match HTTP requests, middleware checks and prepares them, controllers coordinate the work, models use Prisma to access PostgreSQL, and JSON responses go back to the frontend. Login uses bcrypt, JWT, and an HTTP-only cookie. This separation makes it easier to find where a request is handled and where its data is stored.”
+**Topic:** Event-driven code runs a callback when an event happens. An observer pattern lets code subscribe to events and be notified when they occur. Streams process data in smaller pieces, often useful for large files or network data.
+
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/middleware/requestLogger.js | Uses res.on('finish', callback) to react when a response finishes. |
+| backend/src/server.js | Uses process.on('SIGTERM', callback) to react to a shutdown signal. |
+| backend/src/controllers/ and backend/src/models/ | Use async functions for database operations. |
+
+These event listeners are examples of event-driven programming. The backend does not currently create a custom EventEmitter, observer/pub-sub system, or application data streams. res.on and process.on use Node/Express event APIs.
+
+## 10. Database, database driver, and connection pooling
+
+**Topic:** A database stores data. A driver provides a connection from application code to the database. A connection pool keeps reusable connections available so the application does not open a new connection for every query.
+
+| File or folder | Role in this topic |
+| --- | --- |
+| PostgreSQL | Stores user and incident records. |
+| pg package | PostgreSQL driver and pool implementation. |
+| backend/src/db/prisma.js | Creates the pg.Pool using DATABASE_URL and shares it with Prisma. |
+| backend/src/config/env.js | Reads the required DATABASE_URL. |
+| backend/src/controllers/healthController.js | Runs a small query to check database connectivity. |
+
+## 11. ORM, Prisma, schema, models, relations, and CRUD
+
+**Topic:** An ORM maps database tables to objects in code. Prisma uses a schema to describe models and generates a client with query methods. CRUD means Create, Read, Update, and Delete.
+
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/prisma/schema.prisma | Defines Prisma models User and Incident, their fields, and table/column mappings. |
+| backend/prisma7.config.ts | Configures Prisma CLI with schema location and database URL. |
+| backend/src/db/prisma.js | Creates the Prisma 7 client with the PostgreSQL adapter and shared connection pool. |
+| backend/src/models/userModel.js | User queries: find users and create users. |
+| backend/src/models/incidentModel.js | Incident queries: create, list, find, update, and delete. |
+| backend/src/controllers/dashboardController.js | Uses Prisma count queries for dashboard totals. |
+| backend/db/seed.js | Creates the initial admin user when the seed command is run. |
+
+The schema currently defines two models but no relation fields between them. A Prisma relation would explicitly connect records in different models, such as a user to incidents they created; that relation is not represented in the current schema.
+
+## 12. Authentication, JWT, middleware, cookies, and sessions
+
+**Topic:** Authentication checks who a user is. A JWT is a signed token carrying identity data. A cookie lets a browser send the token with later requests. Middleware can check the token before a protected route runs. A server-side session instead stores session state on the server; ResQGrid currently uses JWT in a cookie, not a session store.
+
+| File or folder | Role in this topic |
+| --- | --- |
+| backend/src/controllers/authController.js | Looks up the user, checks the bcrypt password hash, signs a JWT, and sets or clears the cookie. |
+| backend/src/routes/auth.js | Defines login, logout, and current-user routes. |
+| backend/src/middleware/authenticate.js | Reads and verifies the token cookie and attaches identity data to req.user. |
+| backend/src/routes/incidents.js | Requires authentication for all incident endpoints. |
+| backend/src/routes/dashboard.js | Requires authentication before returning dashboard statistics. |
+| backend/src/routes/users.js | Requires authentication before creating a user. |
+| backend/src/app.js | Configures cookie parsing and credentialed CORS. |
+| backend/src/config/env.js | Reads the JWT secret, expiry, and frontend origin. |
+| backend/prisma/schema.prisma | Stores the bcrypt hash in User.passwordHash; it does not store a plain password. |
+
+Login flow: validated email/password → user lookup → bcrypt comparison → JWT signed → token cookie set. Protected request flow: browser sends cookie → authenticate verifies token → route/controller runs.
+
+## 13. File and folder map
+
+    backend/
+    ├── src/
+    │   ├── server.js                 Node process and HTTP listener
+    │   ├── app.js                    Express app, middleware, route mounting
+    │   ├── config/                   Environment and application configuration
+    │   ├── routes/                   HTTP paths and methods
+    │   ├── middleware/               Request parsing/checking/logging/error handling
+    │   ├── controllers/              Request and response handling
+    │   ├── validators/               Request body rules
+    │   ├── models/                   Prisma-backed database operations
+    │   ├── db/                       Shared Prisma client and pool setup
+    │   ├── services/                 Business logic files (currently not used by routes)
+    │   └── utils/                    Shared helpers such as logging
+    ├── prisma/
+    │   └── schema.prisma             Database model definitions
+    ├── prisma7.config.ts             Prisma command-line configuration
+    └── db/seed.js                    Initial administrator seed script
+
+## Note about inactive files
+
+backend/src/services/incidentService.js and backend/src/config/hazardMap.js / severityMaps.js exist, but the active routes and controllers do not import them. The current incident flow is route → controller → incidentModel.js → Prisma. Treat the service and mapping files as inactive unless they are connected to the request flow later.
