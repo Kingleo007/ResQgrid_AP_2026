@@ -12,6 +12,7 @@ import './styles/components.css';
 import './styles/badges.css';
 import './styles/layout.css';
 import './styles/pages.css';
+import './styles/reference-pages.css';
 
 import App from './App.jsx';
 

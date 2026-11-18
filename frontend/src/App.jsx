@@ -12,6 +12,14 @@ import NewIncidentPage from './pages/NewIncidentPage.jsx';
 import NewUserPage from './pages/UsersPage.jsx';
 import NotFound from './pages/NotFound.jsx';
 import AccessDenied from './pages/AccessDenied.jsx';
+import {
+  AboutPage,
+  ChangelogPage,
+  DirectoryPage,
+  GuidelinesPage,
+  HelpPage,
+  ProtocolsPage,
+} from './pages/ReferencePages.jsx';
 
 function App() {
   return (
@@ -33,6 +41,13 @@ function App() {
         <Route path="incidents/:id" element={<IncidentDetailPage />} />
 
         <Route path="users/new" element={<NewUserPage />} />
+
+        <Route path="about" element={<AboutPage />} />
+        <Route path="protocols" element={<ProtocolsPage />} />
+        <Route path="directory" element={<DirectoryPage />} />
+        <Route path="guidelines" element={<GuidelinesPage />} />
+        <Route path="changelog" element={<ChangelogPage />} />
+        <Route path="help" element={<HelpPage />} />
 
         <Route path="403" element={<AccessDenied />} />
 
