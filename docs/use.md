@@ -63,7 +63,7 @@ npx prisma db push     # creates the tables in your database
 ### 5. Seed the database
 
 ```bash
-node db/seed.js
+npm run db:seed
 ```
 
 Output:
@@ -87,7 +87,7 @@ npm run dev
 
 Expected output:
 ```
-[server] ResQGrid API running on http://localhost:4000
+ResQGrid API running on http://localhost:4000
 ```
 
 ### Terminal 2 — Frontend

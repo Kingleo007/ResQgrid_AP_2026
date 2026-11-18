@@ -4,9 +4,6 @@ export function errorHandler(err, req, res, next) {
   // Determine HTTP status
   let status = err.status ?? err.statusCode ?? 500;
 
-  // Map Zod errors that slip through (shouldn't happen with validate middleware)
-  if (err.name === 'ZodError') status = 400;
-
   // Map JWT errors
   if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') status = 401;
 

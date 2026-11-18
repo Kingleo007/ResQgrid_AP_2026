@@ -1,42 +1,37 @@
-# Backend Setup
+# Backend Setup Notes
 
-### 1. Initialize Node.js
+These are the backend packages and commands currently used by ResQGrid. The backend uses PostgreSQL.
+
+## Main backend packages
+
+- `express` — HTTP server and API routes.
+- `prisma` and `@prisma/client` — database schema and query client.
+- `@prisma/adapter-pg` and `pg` — connect Prisma to PostgreSQL through a connection pool.
+- `bcrypt` — password hashing and password checks.
+- `jsonwebtoken` — signed login tokens.
+- `cookie-parser` — reads cookies from incoming requests.
+- `cors` — allows the frontend origin to make requests with cookies.
+- `helmet` — adds security headers.
+- `dotenv` — loads environment variables from `.env`.
+- `nodemon` — restarts the backend during development.
+
+The packages are listed in `backend/package.json`. Install them from the backend folder with:
+
 ```bash
-npm init -y
+npm install
 ```
 
-### 2. Install Express
+## Start and prepare the backend
+
+Run these commands from `backend/`:
+
 ```bash
-npm install express
+npx prisma generate
+npx prisma db push
+npm run db:seed
+npm run dev
 ```
 
-### 3. Install Prisma 7 CLI
-```bash
-npm install -D prisma@7
-```
+`prisma generate` builds the client from `prisma/schema.prisma`. `db push` applies the schema to PostgreSQL. The seed command creates the initial admin if needed. `npm run dev` starts the API using `src/app.js`.
 
-### 4. Install Prisma 7 Client
-```bash
-npm install @prisma/client@7
-```
-
-### 5. Install Prisma 7 MySQL Adapter and Driver
-```bash
-npm install @prisma/adapter-mariadb@7 mariadb
-```
-
-### 6. Install bcrypt
-```bash
-npm install bcrypt
-```
-
-### 7. Install dotenv
-```bash
-npm install dotenv
-```
-
-### 8. Install nodemon
-```bash
-npm install -D nodemon
-```
-
+Set `DATABASE_URL`, `JWT_SECRET`, and optionally `PORT`, `NODE_ENV`, `CLIENT_ORIGIN`, and `JWT_EXPIRES_IN` in `backend/.env` before starting the backend.

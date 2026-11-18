@@ -6,14 +6,14 @@ import { prisma } from '../db/prisma.js';
 import { config } from '../config/env.js';
 import authenticate from '../middleware/authenticate.js';
 import { validate } from '../middleware/validate.js';
-import { loginSchema } from '../validators/authValidator.js';
+import { validateLogin } from '../validators/authValidator.js';
 import { createUserSchema } from '../validators/validators.js';
 
 export const authRouter = Router();
 export const usersRouter = Router();
 
 // Login: POST /api/auth/login
-authRouter.post('/login', validate(loginSchema), async (req, res, next) => {
+authRouter.post('/login', validate(validateLogin), async (req, res, next) => {
   try {
     const user = await prisma.user.findFirst({ where: { email: req.body.email } });
     if (!user || !(await bcrypt.compare(req.body.password, user.passwordHash))) {
