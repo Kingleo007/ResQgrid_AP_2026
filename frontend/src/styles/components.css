@@ -8,9 +8,10 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 16px;
+  min-height: 44px;
+  padding: 8px 16px;
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius);
   border: 1px solid transparent;
   transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
@@ -19,7 +20,7 @@
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.58;
   cursor: not-allowed;
 }
 
@@ -66,6 +67,7 @@
 }
 
 .btn-sm {
+  min-height: 34px;
   padding: 4px 10px;
   font-size: var(--text-xs);
 }
@@ -74,12 +76,12 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .form-label {
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 650;
   color: var(--ink);
 }
 
@@ -91,22 +93,24 @@
 .form-input,
 .form-select,
 .form-textarea {
-  padding: 8px 12px;
+  min-height: 44px;
+  padding: 9px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-size: var(--text-sm);
   color: var(--ink);
   background: var(--surface);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
   width: 100%;
 }
 
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  outline: none;
+.form-input:focus-visible,
+.form-select:focus-visible,
+.form-textarea:focus-visible {
+  outline: 3px solid var(--saffron-dark);
+  outline-offset: 2px;
   border-color: var(--navy);
-  box-shadow: 0 0 0 3px rgba(31, 58, 95, 0.12);
+  box-shadow: 0 0 0 2px rgba(31, 58, 95, 0.08);
 }
 
 .form-input::placeholder,
@@ -116,7 +120,7 @@
 
 .form-textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 104px;
 }
 
 .form-error {
@@ -150,7 +154,7 @@
 }
 
 .table th {
-  padding: 10px 16px;
+  padding: 11px 14px;
   text-align: left;
   font-weight: 600;
   color: var(--ink-muted);
@@ -161,7 +165,7 @@
 }
 
 .table td {
-  padding: 12px 16px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--divider);
   color: var(--ink);
   vertical-align: middle;
@@ -340,8 +344,8 @@
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
+  border-radius: var(--radius-card);
+  padding: 22px;
 }
 
 .card-title {
@@ -373,4 +377,32 @@
 .detail-field p {
   font-size: var(--text-sm);
   color: var(--ink);
+}
+
+.table-sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.table-sort-button:hover { color: var(--navy); }
+
+.table-sort-button__indicator {
+  color: var(--navy);
+  font-size: 0.72rem;
+}
+
+.table-sort-button:focus-visible {
+  border-radius: 3px;
+  outline-offset: 2px;
 }

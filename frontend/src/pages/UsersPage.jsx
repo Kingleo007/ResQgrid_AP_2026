@@ -45,12 +45,12 @@ export default function NewUserPage() {
       <PageHeader title="Create User" subtitle="Add a new account" />
 
       {error && (
-        <p style={{ color: 'var(--severity-critical)', marginTop: 12, fontSize: 'var(--text-sm)' }}>
+        <p className="login-error entry-form__error" role="alert">
           {error}
         </p>
       )}
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: 480, marginTop: 24 }}>
+      <form className="entry-form entry-form--narrow" onSubmit={handleSubmit}>
 
         {/* Name */}
         <div className="form-group">
@@ -68,7 +68,7 @@ export default function NewUserPage() {
         </div>
 
         {/* Email */}
-        <div className="form-group" style={{ marginTop: 16 }}>
+        <div className="form-group">
           <label className="form-label" htmlFor="email">Email *</label>
           <input
             id="email"
@@ -83,7 +83,7 @@ export default function NewUserPage() {
         </div>
 
         {/* Password */}
-        <div className="form-group" style={{ marginTop: 16 }}>
+        <div className="form-group">
           <label className="form-label" htmlFor="password">Password *</label>
           <input
             id="password"
@@ -95,13 +95,13 @@ export default function NewUserPage() {
             value={form.password}
             onChange={handleChange}
           />
-          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-muted)', marginTop: 4 }}>
+          <p className="entry-form__help">
             Password is hashed with bcrypt before being stored — never saved as plain text.
           </p>
         </div>
 
         {/* Buttons */}
-        <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+        <div className="entry-form__actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Creating…' : 'Create User'}
           </button>

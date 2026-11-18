@@ -3,31 +3,28 @@
 
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
-// useLocation = Current url
 
 import Sidebar from './Sidebar.jsx';
 import FloatingNav from './FloatingNav.jsx';
 
 export default function AppShell() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className={`app-shell${mobileOpen ? ' app-shell--mobile-open' : ''}`}>
-      <Sidebar
-        open={sidebarOpen}
-        setOpen={setSidebarOpen}
-        mobileOpen={mobileOpen}
-        onNavigate={() => setMobileOpen(false)}
-      />
+      <a className="skip-link" href="#main-content">Skip to main content</a>
+
+      <Sidebar mobileOpen={mobileOpen} onNavigate={() => setMobileOpen(false)} />
 
       <div className="app-shell__main">
-
-        <FloatingNav onToggleMobile={() => setMobileOpen((value) => !value)} />
+        <FloatingNav
+          mobileOpen={mobileOpen}
+          onToggleMobile={() => setMobileOpen((value) => !value)}
+        />
 
         {mobileOpen && <button className="app-shell__scrim" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
 
-        <main className="app-shell__content">
+        <main className="app-shell__content" id="main-content" tabIndex="-1">
           <Outlet />
         </main>
 

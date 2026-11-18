@@ -55,7 +55,7 @@ export default function LoginPage() {
 
         {/* Error message (only shown if login fails) */}
         {error && (
-          <p style={{ color: 'var(--severity-critical)', marginBottom: 12, fontSize: 'var(--text-sm)' }}>
+          <p className="login-error" role="alert">
             {error}
           </p>
         )}

@@ -169,6 +169,7 @@ export default function IndiaIncidentMap({ incidents = [], loading = false, erro
                   <button
                     type="button"
                     className={selectedState === name ? 'india-map__state india-map__state--selected' : 'india-map__state'}
+                    aria-pressed={selectedState === name}
                     onClick={() => setSelectedState((current) => current === name ? '' : name)}
                   >
                     <span className="india-map__state-dot" style={{ backgroundColor: fillForCount(count) }} />

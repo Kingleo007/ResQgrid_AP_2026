@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import PageHeader from '../layout/PageHeader.jsx';
 import SeverityBadge from '../components/SeverityBadge.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
+import { formatIST } from '../utils/format.js';
 
 // All possible statuses an incident can be in
 const STATUS_OPTIONS = ['reported', 'active', 'contained', 'resolved', 'closed'];
@@ -79,13 +80,13 @@ export default function IncidentDetailPage() {
   }
 
   // ── Loading / error states ──────────────────────────────────
-  if (loading) return <div className="page"><p style={{ color: 'var(--ink-muted)', marginTop: 24 }}>Loading…</p></div>;
+  if (loading) return <div className="page"><p className="incident-register__message" role="status">Loading incident details…</p></div>;
 
   if (error) {
     return (
       <div className="page">
-        <p style={{ color: 'var(--severity-critical)', marginTop: 24 }}>{error}</p>
-        <Link to="/incidents" className="btn btn-secondary" style={{ marginTop: 16 }}>← Back</Link>
+        <p className="incident-register__message incident-register__message--error" role="alert">{error}</p>
+        <Link to="/incidents" className="btn btn-secondary incident-detail__error-action">← Back to incidents</Link>
       </div>
     );
   }
@@ -98,66 +99,66 @@ export default function IncidentDetailPage() {
       {/* Back link */}
       <Link
         to="/incidents"
-        style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-muted)', display: 'inline-block', marginBottom: 16 }}
+        className="incident-detail__back"
       >
-        ← All Incidents
+        <span aria-hidden="true">←</span>&nbsp; All incidents
       </Link>
 
       {/* Page header */}
       <PageHeader
         title={incident.title}
         subtitle={
-          <span style={{ fontFamily: 'monospace', fontSize: 'var(--text-sm)', color: 'var(--ink-muted)' }}>
+          <span className="incident-table__code">
             {incident.incidentCode}
           </span>
         }
       />
 
       {/* Status + severity badges */}
-      <div style={{ display: 'flex', gap: 12, marginTop: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="incident-detail__badges">
         <StatusBadge status={incident.status} />
         <SeverityBadge severity={incident.severity} />
-        <span style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-muted)', textTransform: 'capitalize' }}>
+        <span className="incident-detail__hazard">
           {incident.hazardType}
         </span>
       </div>
 
       {/* Two-column layout: details left, status update right */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 24 }}>
+      <div className="incident-detail__grid">
 
         {/* Left — incident details */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="incident-detail__column">
 
-          <div className="card">
+          <section className="card incident-detail__card">
             <p className="card-title">Details</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 'var(--text-sm)' }}>
-              <div>
-                <span style={{ color: 'var(--ink-muted)' }}>Location: </span>
-                {incident.locationName ?? '—'}
+            <div className="incident-detail__fields">
+              <div className="incident-detail__field">
+                <span>Location</span>
+                <p>{incident.locationName ?? '—'}</p>
               </div>
-              <div>
-                <span style={{ color: 'var(--ink-muted)' }}>Created: </span>
-                {new Date(incident.createdAt).toLocaleString()}
+              <div className="incident-detail__field">
+                <span>Created</span>
+                <p>{formatIST(incident.createdAt)}</p>
               </div>
-              <div>
-                <span style={{ color: 'var(--ink-muted)' }}>Last updated: </span>
-                {new Date(incident.updatedAt).toLocaleString()}
+              <div className="incident-detail__field">
+                <span>Last updated</span>
+                <p>{formatIST(incident.updatedAt)}</p>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="card">
+          <section className="card incident-detail__card">
             <p className="card-title">Description</p>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink)', lineHeight: 1.7 }}>
-              {incident.description || <em style={{ color: 'var(--ink-muted)' }}>No description provided.</em>}
+            <p className="incident-detail__description">
+              {incident.description || <em>No description provided.</em>}
             </p>
-          </div>
+          </section>
 
         </div>
 
         {/* Right — update status */}
-        <div>
-          <div className="card">
+        <div className="incident-detail__column">
+          <section className="card incident-detail__card">
             <p className="card-title">Update Status</p>
             <form onSubmit={handleStatusUpdate}>
               <div className="form-group">
@@ -179,8 +180,7 @@ export default function IncidentDetailPage() {
 
               <button
                 type="submit"
-                className="btn btn-primary"
-                style={{ marginTop: 16 }}
+                className="btn btn-primary incident-detail__save"
                 disabled={statusSaving || newStatus === incident.status}
               >
                 {statusSaving ? 'Saving…' : 'Save Status'}
@@ -188,18 +188,17 @@ export default function IncidentDetailPage() {
 
               {/* Show a small confirmation or error message */}
               {statusMsg && (
-                <p style={{ marginTop: 8, fontSize: 'var(--text-sm)', color: 'var(--ink-muted)' }}>
+                <p className="incident-detail__status-message" role="status">
                   {statusMsg}
                 </p>
               )}
             </form>
-          </div>
+          </section>
 
           {/* Delete button */}
-          <div style={{ marginTop: 16 }}>
+          <div>
             <button
-              className="btn btn-ghost btn-sm"
-              style={{ color: 'var(--severity-critical)' }}
+              className="btn btn-ghost btn-sm incident-detail__delete"
               onClick={async () => {
                 if (!window.confirm(`Delete "${incident.title}"? This cannot be undone.`)) return;
                 const res = await fetch(`/api/incidents/${id}`, {

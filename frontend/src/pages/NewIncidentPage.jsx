@@ -77,12 +77,12 @@ export default function NewIncidentPage() {
       <PageHeader title="New Incident" subtitle="Report a new incident" />
 
       {error && (
-        <p style={{ color: 'var(--severity-critical)', marginTop: 12, fontSize: 'var(--text-sm)' }}>
+        <p className="login-error entry-form__error" role="alert">
           {error}
         </p>
       )}
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: 560, marginTop: 24 }}>
+      <form className="entry-form" onSubmit={handleSubmit}>
 
         {/* Title */}
         <div className="form-group">
@@ -100,7 +100,7 @@ export default function NewIncidentPage() {
         </div>
 
         {/* Hazard Type */}
-        <div className="form-group" style={{ marginTop: 16 }}>
+        <div className="form-group">
           <label className="form-label" htmlFor="hazardType">Hazard Type</label>
           <select
             id="hazardType"
@@ -119,7 +119,7 @@ export default function NewIncidentPage() {
         </div>
 
         {/* Severity */}
-        <div className="form-group" style={{ marginTop: 16 }}>
+        <div className="form-group">
           <label className="form-label" htmlFor="severity">Severity</label>
           <select
             id="severity"
@@ -136,7 +136,7 @@ export default function NewIncidentPage() {
         </div>
 
         {/* Location */}
-        <div className="incident-location-fields" style={{ marginTop: 16 }}>
+        <div className="incident-location-fields">
           <div className="form-group">
             <label className="form-label" htmlFor="city">City</label>
             <input
@@ -173,7 +173,7 @@ export default function NewIncidentPage() {
         </div>
 
         {/* Description */}
-        <div className="form-group" style={{ marginTop: 16 }}>
+        <div className="form-group">
           <label className="form-label" htmlFor="description">Description</label>
           <textarea
             id="description"
@@ -188,7 +188,7 @@ export default function NewIncidentPage() {
         </div>
 
         {/* Buttons */}
-        <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+        <div className="entry-form__actions">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Creating…' : 'Create Incident'}
           </button>
