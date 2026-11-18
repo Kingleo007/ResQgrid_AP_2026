@@ -1,11 +1,16 @@
-// =============================================================================
-// src/validators/authValidator.js — Zod validation schemas for auth endpoints
-// =============================================================================
+export function validateLogin(body) {
+  const { email, password } = body || {};
 
-import { z } from 'zod';
+  // 1. Check email (must be text containing '@' and '.')
+  if (!email || typeof email !== 'string' || !email.includes('@') || !email.includes('.')) {
+    return { valid: false, message: 'Must be a valid email address' };
+  }
 
-/** POST /api/auth/login request body */
-export const loginSchema = z.object({
-  email:    z.string().email('Must be a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
+  // 2. Check password (must not be empty)
+  if (!password || typeof password !== 'string') {
+    return { valid: false, message: 'Password is required' };
+  }
+
+  // 3. Everything looks good!
+  return { valid: true };
+}
