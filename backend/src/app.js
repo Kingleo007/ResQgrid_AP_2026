@@ -48,16 +48,8 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Start the HTTP server from this file.
-const server = app.listen(config.port, () => {
+app.listen(config.port, () => {
   console.log(`ResQGrid API running on http://localhost:${config.port}`);
 });
-
-// Close cleanly when the process is stopped.
-for (const signal of ['SIGTERM', 'SIGINT']) {
-  process.once(signal, () => {
-    console.log(`${signal} received — shutting down`);
-    server.close(() => process.exit(0));
-  });
-}
 
 export default app;
