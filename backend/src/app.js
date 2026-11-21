@@ -1,7 +1,6 @@
 // src/app.js — Express app setup for ResQGrid
 
 import express from 'express';
-import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -13,8 +12,6 @@ import { authRouter, usersRouter } from './routes/users.js';
 
 const app = express();
 
-// security middleware
-app.use(helmet());
 
 // middleware package - allow the frontend dev server to send requests with cookies
 app.use(cors({
