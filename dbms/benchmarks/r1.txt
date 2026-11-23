@@ -3,7 +3,7 @@ Seq Scan on users  (cost=0.00..4.28 rows=1 width=138) (actual time=0.008..0.016 
   Filter: (email = 'admin@resqgrid.local'::text)
   Rows Removed by Filter: 101
   Buffers: shared hit=3
-Planning:
+Planning:-
   Buffers: shared hit=122
 Planning Time: 0.295 ms
 Execution Time: 0.041 ms
@@ -13,7 +13,7 @@ Seq Scan on users  (cost=0.00..4.28 rows=1 width=138) (actual time=0.006..0.011 
   Filter: (email = 'admin@resqgrid.local'::text)
   Rows Removed by Filter: 101
   Buffers: shared hit=3
-Planning:
+Planning:-
   Buffers: shared hit=116
 Planning Time: 0.255 ms
 Execution Time: 0.029 ms
@@ -23,7 +23,7 @@ Seq Scan on users  (cost=0.00..4.28 rows=1 width=138) (actual time=0.006..0.013 
   Filter: (email = 'admin@resqgrid.local'::text)
   Rows Removed by Filter: 101
   Buffers: shared hit=3
-Planning:
+Planning:-
   Buffers: shared hit=116
 Planning Time: 0.270 ms
 Execution Time: 0.034 ms
