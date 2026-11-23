@@ -1,0 +1,35 @@
+=== W2 run 1 ===
+Update on incidents  (cost=0.27..8.30 rows=1 width=206) (actual time=0.079..0.080 rows=1.00 loops=1)
+  Buffers: shared hit=13
+  ->  Index Scan using incidents_pkey on incidents  (cost=0.27..8.30 rows=1 width=206) (actual time=0.026..0.026 rows=1.00 loops=1)
+        Index Cond: (id = '12b78e12-636a-496a-baeb-eaa910b91966'::text)
+        Index Searches: 1
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=119
+Planning Time: 0.240 ms
+Execution Time: 0.343 ms
+
+=== W2 run 2 ===
+Update on incidents  (cost=0.27..8.30 rows=1 width=206) (actual time=0.072..0.073 rows=1.00 loops=1)
+  Buffers: shared hit=17
+  ->  Index Scan using incidents_pkey on incidents  (cost=0.27..8.30 rows=1 width=206) (actual time=0.020..0.021 rows=1.00 loops=1)
+        Index Cond: (id = '12b78e12-636a-496a-baeb-eaa910b91966'::text)
+        Index Searches: 1
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=119
+Planning Time: 0.199 ms
+Execution Time: 0.124 ms
+
+=== W2 run 3 ===
+Update on incidents  (cost=0.27..8.30 rows=1 width=206) (actual time=0.074..0.075 rows=1.00 loops=1)
+  Buffers: shared hit=17
+  ->  Index Scan using incidents_pkey on incidents  (cost=0.27..8.30 rows=1 width=206) (actual time=0.026..0.026 rows=1.00 loops=1)
+        Index Cond: (id = '12b78e12-636a-496a-baeb-eaa910b91966'::text)
+        Index Searches: 1
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=119
+Planning Time: 0.200 ms
+Execution Time: 0.125 ms
