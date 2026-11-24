@@ -1,26 +1,26 @@
 === W1 run 1 ===
-Insert on incidents  (cost=0.00..0.03 rows=1 width=272) (actual time=0.144..0.144 rows=1.00 loops=1)
-  Buffers: shared hit=49
-  ->  Result  (cost=0.00..0.03 rows=1 width=272) (actual time=0.021..0.021 rows=1.00 loops=1)
+Insert on incidents  (cost=0.00..0.03 rows=1 width=272) (actual time=0.773..0.773 rows=1.00 loops=1)
+  Buffers: shared hit=50 dirtied=3
+  ->  Result  (cost=0.00..0.03 rows=1 width=272) (actual time=0.375..0.376 rows=1.00 loops=1)
 Planning:
   Buffers: shared hit=6
-Planning Time: 0.042 ms
-Execution Time: 0.169 ms
+Planning Time: 0.034 ms
+Execution Time: 0.979 ms
 
 === W1 run 2 ===
-Insert on incidents  (cost=0.00..0.03 rows=1 width=272) (actual time=0.127..0.127 rows=1.00 loops=1)
+Insert on incidents  (cost=0.00..0.03 rows=1 width=272) (actual time=0.108..0.109 rows=1.00 loops=1)
   Buffers: shared hit=50
-  ->  Result  (cost=0.00..0.03 rows=1 width=272) (actual time=0.019..0.019 rows=1.00 loops=1)
+  ->  Result  (cost=0.00..0.03 rows=1 width=272) (actual time=0.015..0.016 rows=1.00 loops=1)
 Planning:
   Buffers: shared hit=6
-Planning Time: 0.047 ms
-Execution Time: 0.154 ms
+Planning Time: 0.034 ms
+Execution Time: 0.127 ms
 
 === W1 run 3 ===
-Insert on incidents  (cost=0.00..0.03 rows=1 width=272) (actual time=0.138..0.138 rows=1.00 loops=1)
+Insert on incidents  (cost=0.00..0.03 rows=1 width=272) (actual time=0.115..0.116 rows=1.00 loops=1)
   Buffers: shared hit=50
-  ->  Result  (cost=0.00..0.03 rows=1 width=272) (actual time=0.017..0.017 rows=1.00 loops=1)
+  ->  Result  (cost=0.00..0.03 rows=1 width=272) (actual time=0.013..0.014 rows=1.00 loops=1)
 Planning:
   Buffers: shared hit=6
-Planning Time: 0.037 ms
-Execution Time: 0.159 ms
+Planning Time: 0.033 ms
+Execution Time: 0.136 ms

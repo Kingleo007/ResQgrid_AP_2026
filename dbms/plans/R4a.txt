@@ -1,29 +1,29 @@
 === R4a run 1 ===
-Aggregate  (cost=21.29..21.30 rows=1 width=8) (actual time=0.049..0.049 rows=1.00 loops=1)
+Aggregate  (cost=21.29..21.30 rows=1 width=8) (actual time=0.044..0.044 rows=1.00 loops=1)
   Buffers: shared hit=15
-  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=0) (actual time=0.005..0.037 rows=503.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=0) (actual time=0.005..0.033 rows=503.00 loops=1)
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=104
-Planning Time: 0.223 ms
-Execution Time: 0.082 ms
+Planning Time: 0.213 ms
+Execution Time: 0.077 ms
 
 === R4a run 2 ===
-Aggregate  (cost=21.29..21.30 rows=1 width=8) (actual time=0.047..0.048 rows=1.00 loops=1)
+Aggregate  (cost=21.29..21.30 rows=1 width=8) (actual time=0.045..0.045 rows=1.00 loops=1)
   Buffers: shared hit=15
-  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=0) (actual time=0.006..0.035 rows=503.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=0) (actual time=0.005..0.034 rows=503.00 loops=1)
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=104
-Planning Time: 0.288 ms
-Execution Time: 0.075 ms
+Planning Time: 0.198 ms
+Execution Time: 0.069 ms
 
 === R4a run 3 ===
-Aggregate  (cost=21.29..21.30 rows=1 width=8) (actual time=0.049..0.049 rows=1.00 loops=1)
+Aggregate  (cost=21.29..21.30 rows=1 width=8) (actual time=0.043..0.044 rows=1.00 loops=1)
   Buffers: shared hit=15
-  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=0) (actual time=0.006..0.037 rows=503.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=0) (actual time=0.004..0.032 rows=503.00 loops=1)
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=104
-Planning Time: 0.219 ms
-Execution Time: 0.075 ms
+Planning Time: 0.195 ms
+Execution Time: 0.069 ms

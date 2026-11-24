@@ -1,35 +1,35 @@
 === R2 run 1 ===
-Sort  (cost=42.60..43.86 rows=503 width=193) (actual time=0.094..0.105 rows=503.00 loops=1)
+Sort  (cost=42.60..43.86 rows=503 width=193) (actual time=0.336..0.346 rows=503.00 loops=1)
   Sort Key: created_at DESC
   Sort Method: quicksort  Memory: 131kB
   Buffers: shared hit=18
-  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=193) (actual time=0.007..0.051 rows=503.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=193) (actual time=0.011..0.061 rows=503.00 loops=1)
         Buffers: shared hit=15
 Planning:
-  Buffers: shared hit=148 read=1
-Planning Time: 0.576 ms
-Execution Time: 0.136 ms
+  Buffers: shared hit=149
+Planning Time: 0.262 ms
+Execution Time: 0.380 ms
 
 === R2 run 2 ===
-Sort  (cost=42.60..43.86 rows=503 width=193) (actual time=0.096..0.109 rows=503.00 loops=1)
+Sort  (cost=42.60..43.86 rows=503 width=193) (actual time=0.075..0.085 rows=503.00 loops=1)
   Sort Key: created_at DESC
   Sort Method: quicksort  Memory: 131kB
   Buffers: shared hit=18
-  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=193) (actual time=0.006..0.043 rows=503.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=193) (actual time=0.005..0.037 rows=503.00 loops=1)
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=149
-Planning Time: 0.235 ms
-Execution Time: 0.141 ms
+Planning Time: 0.227 ms
+Execution Time: 0.115 ms
 
 === R2 run 3 ===
-Sort  (cost=42.60..43.86 rows=503 width=193) (actual time=0.087..0.097 rows=503.00 loops=1)
+Sort  (cost=42.60..43.86 rows=503 width=193) (actual time=0.084..0.094 rows=503.00 loops=1)
   Sort Key: created_at DESC
   Sort Method: quicksort  Memory: 131kB
   Buffers: shared hit=18
-  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=193) (actual time=0.005..0.036 rows=503.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=193) (actual time=0.006..0.042 rows=503.00 loops=1)
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=149
-Planning Time: 0.223 ms
-Execution Time: 0.127 ms
+Planning Time: 0.253 ms
+Execution Time: 0.130 ms

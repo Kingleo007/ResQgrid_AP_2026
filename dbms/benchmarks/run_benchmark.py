@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-run_benchmark.py — Benchmarks all 13 SQL queries in dbms/04_queries.sql on PostgreSQL.
+run_benchmark.py — Benchmarks all 14 SQL queries in dbms/04_queries.sql on PostgreSQL.
 
 What it does:
   1. Connects to the local `resqgrid` PostgreSQL database via `psql`.
   2. Picks one real incident ID (`INC-2026-0250`) to substitute into parameterized queries (R3, W2, W3).
-  3. Runs each of the 13 queries (R1..R7, W1..W4) 3 times with `EXPLAIN (ANALYZE, BUFFERS)`.
+  3. Runs each of the 14 queries (R1..R8, W1..W4) 3 times with `EXPLAIN (ANALYZE, BUFFERS)`.
   4. Wraps every WRITE query (W1..W4) in `BEGIN; ... ROLLBACK;` so the database data is unchanged.
   5. Saves all 3 raw execution plans per query into `dbms/plans/<QUERY_ID>.txt` and prints the
      3-run timings, average (ms), and scan type for `dbms/05_query_timings.md`.
@@ -63,6 +63,8 @@ def main() -> None:
          "SELECT incident_code, title, hazard_type, severity, status, RANK() OVER (PARTITION BY hazard_type ORDER BY CASE severity WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'moderate' THEN 3 WHEN 'low' THEN 4 END) AS severity_rank FROM incidents ORDER BY hazard_type, severity_rank;"),
         ("R7", "READ", "Running count of incidents over time",
          "SELECT incident_code, title, created_at::DATE AS reported_date, ROW_NUMBER() OVER (ORDER BY created_at) AS incident_number, COUNT(*) OVER (ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total FROM incidents ORDER BY created_at;"),
+        ("R8", "READ", "Active incidents joined with hazard-type totals (JOIN)",
+         "SELECT i.incident_code, i.title, i.hazard_type, i.severity, i.status, h.hazard_total FROM incidents i JOIN (SELECT hazard_type, COUNT(*) AS hazard_total FROM incidents GROUP BY hazard_type) h ON h.hazard_type = i.hazard_type WHERE i.status NOT IN ('resolved', 'closed') ORDER BY h.hazard_total DESC, i.created_at DESC;"),
         ("W1", "WRITE", "Create a new incident",
          "INSERT INTO incidents (id, incident_code, title, hazard_type, severity, status, description, location_name, updated_at) VALUES (gen_random_uuid()::text, 'INC-2026-9999', 'Benchmark Test Incident', 'flood', 'high', 'reported', 'Test description', 'Guwahati, Assam', now()) RETURNING id, incident_code, title, hazard_type, severity, status, description, location_name, created_at, updated_at;"),
         ("W2", "WRITE", "Update incident fields by ID",

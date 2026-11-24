@@ -1,65 +1,65 @@
 === R6 run 1 ===
-Incremental Sort  (cost=52.84..85.20 rows=503 width=70) (actual time=1.019..1.675 rows=503.00 loops=1)
+Incremental Sort  (cost=52.84..85.20 rows=503 width=70) (actual time=0.230..0.368 rows=503.00 loops=1)
   Sort Key: hazard_type, (rank() OVER w1)
   Presorted Key: hazard_type
   Full-sort Groups: 6  Sort Method: quicksort  Average Memory: 31kB  Peak Memory: 31kB
   Pre-sorted Groups: 6  Sort Method: quicksort  Average Memory: 33kB  Peak Memory: 33kB
   Buffers: shared hit=24
-  ->  WindowAgg  (cost=47.65..62.72 rows=503 width=70) (actual time=0.534..1.426 rows=503.00 loops=1)
+  ->  WindowAgg  (cost=47.65..62.72 rows=503 width=70) (actual time=0.191..0.273 rows=503.00 loops=1)
         Window: w1 AS (PARTITION BY hazard_type ORDER BY (CASE severity WHEN 'critical'::text THEN 1 WHEN 'high'::text THEN 2 WHEN 'moderate'::text THEN 3 WHEN 'low'::text THEN 4 ELSE NULL::integer END) ROWS UNBOUNDED PRECEDING)
         Storage: Memory  Maximum Storage: 17kB
         Buffers: shared hit=18
-        ->  Sort  (cost=47.63..48.89 rows=503 width=62) (actual time=0.519..0.600 rows=503.00 loops=1)
+        ->  Sort  (cost=47.63..48.89 rows=503 width=62) (actual time=0.187..0.195 rows=503.00 loops=1)
               Sort Key: hazard_type, (CASE severity WHEN 'critical'::text THEN 1 WHEN 'high'::text THEN 2 WHEN 'moderate'::text THEN 3 WHEN 'low'::text THEN 4 ELSE NULL::integer END)
               Sort Method: quicksort  Memory: 66kB
               Buffers: shared hit=18
-              ->  Seq Scan on incidents  (cost=0.00..25.06 rows=503 width=62) (actual time=0.015..0.137 rows=503.00 loops=1)
+              ->  Seq Scan on incidents  (cost=0.00..25.06 rows=503 width=62) (actual time=0.014..0.064 rows=503.00 loops=1)
                     Buffers: shared hit=15
 Planning:
   Buffers: shared hit=114
-Planning Time: 0.541 ms
-Execution Time: 1.765 ms
+Planning Time: 0.735 ms
+Execution Time: 0.419 ms
 
 === R6 run 2 ===
-Incremental Sort  (cost=52.84..85.20 rows=503 width=70) (actual time=0.304..0.459 rows=503.00 loops=1)
+Incremental Sort  (cost=52.84..85.20 rows=503 width=70) (actual time=0.213..0.349 rows=503.00 loops=1)
   Sort Key: hazard_type, (rank() OVER w1)
   Presorted Key: hazard_type
   Full-sort Groups: 6  Sort Method: quicksort  Average Memory: 31kB  Peak Memory: 31kB
   Pre-sorted Groups: 6  Sort Method: quicksort  Average Memory: 33kB  Peak Memory: 33kB
   Buffers: shared hit=24
-  ->  WindowAgg  (cost=47.65..62.72 rows=503 width=70) (actual time=0.260..0.354 rows=503.00 loops=1)
+  ->  WindowAgg  (cost=47.65..62.72 rows=503 width=70) (actual time=0.176..0.257 rows=503.00 loops=1)
         Window: w1 AS (PARTITION BY hazard_type ORDER BY (CASE severity WHEN 'critical'::text THEN 1 WHEN 'high'::text THEN 2 WHEN 'moderate'::text THEN 3 WHEN 'low'::text THEN 4 ELSE NULL::integer END) ROWS UNBOUNDED PRECEDING)
         Storage: Memory  Maximum Storage: 17kB
         Buffers: shared hit=18
-        ->  Sort  (cost=47.63..48.89 rows=503 width=62) (actual time=0.254..0.265 rows=503.00 loops=1)
+        ->  Sort  (cost=47.63..48.89 rows=503 width=62) (actual time=0.173..0.181 rows=503.00 loops=1)
               Sort Key: hazard_type, (CASE severity WHEN 'critical'::text THEN 1 WHEN 'high'::text THEN 2 WHEN 'moderate'::text THEN 3 WHEN 'low'::text THEN 4 ELSE NULL::integer END)
               Sort Method: quicksort  Memory: 66kB
               Buffers: shared hit=18
-              ->  Seq Scan on incidents  (cost=0.00..25.06 rows=503 width=62) (actual time=0.009..0.075 rows=503.00 loops=1)
+              ->  Seq Scan on incidents  (cost=0.00..25.06 rows=503 width=62) (actual time=0.006..0.055 rows=503.00 loops=1)
                     Buffers: shared hit=15
 Planning:
   Buffers: shared hit=114
-Planning Time: 0.194 ms
-Execution Time: 0.512 ms
+Planning Time: 0.166 ms
+Execution Time: 0.382 ms
 
 === R6 run 3 ===
-Incremental Sort  (cost=52.84..85.20 rows=503 width=70) (actual time=0.276..0.414 rows=503.00 loops=1)
+Incremental Sort  (cost=52.84..85.20 rows=503 width=70) (actual time=0.216..0.352 rows=503.00 loops=1)
   Sort Key: hazard_type, (rank() OVER w1)
   Presorted Key: hazard_type
   Full-sort Groups: 6  Sort Method: quicksort  Average Memory: 31kB  Peak Memory: 31kB
   Pre-sorted Groups: 6  Sort Method: quicksort  Average Memory: 33kB  Peak Memory: 33kB
   Buffers: shared hit=24
-  ->  WindowAgg  (cost=47.65..62.72 rows=503 width=70) (actual time=0.234..0.318 rows=503.00 loops=1)
+  ->  WindowAgg  (cost=47.65..62.72 rows=503 width=70) (actual time=0.179..0.260 rows=503.00 loops=1)
         Window: w1 AS (PARTITION BY hazard_type ORDER BY (CASE severity WHEN 'critical'::text THEN 1 WHEN 'high'::text THEN 2 WHEN 'moderate'::text THEN 3 WHEN 'low'::text THEN 4 ELSE NULL::integer END) ROWS UNBOUNDED PRECEDING)
         Storage: Memory  Maximum Storage: 17kB
         Buffers: shared hit=18
-        ->  Sort  (cost=47.63..48.89 rows=503 width=62) (actual time=0.229..0.238 rows=503.00 loops=1)
+        ->  Sort  (cost=47.63..48.89 rows=503 width=62) (actual time=0.176..0.184 rows=503.00 loops=1)
               Sort Key: hazard_type, (CASE severity WHEN 'critical'::text THEN 1 WHEN 'high'::text THEN 2 WHEN 'moderate'::text THEN 3 WHEN 'low'::text THEN 4 ELSE NULL::integer END)
               Sort Method: quicksort  Memory: 66kB
               Buffers: shared hit=18
-              ->  Seq Scan on incidents  (cost=0.00..25.06 rows=503 width=62) (actual time=0.008..0.082 rows=503.00 loops=1)
+              ->  Seq Scan on incidents  (cost=0.00..25.06 rows=503 width=62) (actual time=0.006..0.056 rows=503.00 loops=1)
                     Buffers: shared hit=15
 Planning:
   Buffers: shared hit=114
-Planning Time: 0.208 ms
-Execution Time: 0.452 ms
+Planning Time: 0.169 ms
+Execution Time: 0.387 ms

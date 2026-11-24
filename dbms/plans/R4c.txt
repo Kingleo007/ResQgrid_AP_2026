@@ -1,35 +1,35 @@
 === R4c run 1 ===
-Aggregate  (cost=21.54..21.55 rows=1 width=8) (actual time=0.046..0.046 rows=1.00 loops=1)
+Aggregate  (cost=21.54..21.55 rows=1 width=8) (actual time=0.040..0.040 rows=1.00 loops=1)
   Buffers: shared hit=15
-  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=100 width=0) (actual time=0.005..0.042 rows=100.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=100 width=0) (actual time=0.005..0.037 rows=100.00 loops=1)
         Filter: (status = 'resolved'::text)
         Rows Removed by Filter: 403
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=75
-Planning Time: 0.265 ms
-Execution Time: 0.069 ms
+Planning Time: 0.147 ms
+Execution Time: 0.060 ms
 
 === R4c run 2 ===
-Aggregate  (cost=21.54..21.55 rows=1 width=8) (actual time=0.041..0.042 rows=1.00 loops=1)
+Aggregate  (cost=21.54..21.55 rows=1 width=8) (actual time=0.040..0.040 rows=1.00 loops=1)
   Buffers: shared hit=15
-  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=100 width=0) (actual time=0.005..0.038 rows=100.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=100 width=0) (actual time=0.005..0.037 rows=100.00 loops=1)
         Filter: (status = 'resolved'::text)
         Rows Removed by Filter: 403
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=75
-Planning Time: 0.156 ms
-Execution Time: 0.062 ms
+Planning Time: 0.160 ms
+Execution Time: 0.060 ms
 
 === R4c run 3 ===
-Aggregate  (cost=21.54..21.55 rows=1 width=8) (actual time=0.068..0.068 rows=1.00 loops=1)
+Aggregate  (cost=21.54..21.55 rows=1 width=8) (actual time=0.055..0.055 rows=1.00 loops=1)
   Buffers: shared hit=15
-  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=100 width=0) (actual time=0.006..0.063 rows=100.00 loops=1)
+  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=100 width=0) (actual time=0.013..0.052 rows=100.00 loops=1)
         Filter: (status = 'resolved'::text)
         Rows Removed by Filter: 403
         Buffers: shared hit=15
 Planning:
   Buffers: shared hit=75
-Planning Time: 0.184 ms
-Execution Time: 0.092 ms
+Planning Time: 0.163 ms
+Execution Time: 0.075 ms

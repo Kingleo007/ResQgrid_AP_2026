@@ -1,59 +1,59 @@
 === R7 run 1 ===
-WindowAgg  (cost=42.65..60.21 rows=503 width=65) (actual time=0.093..0.208 rows=503.00 loops=1)
+WindowAgg  (cost=42.65..60.21 rows=503 width=65) (actual time=0.181..0.300 rows=503.00 loops=1)
   Window: w2 AS (ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
   Storage: Memory  Maximum Storage: 17kB
   Buffers: shared hit=18
-  ->  WindowAgg  (cost=42.62..51.40 rows=503 width=53) (actual time=0.088..0.135 rows=503.00 loops=1)
+  ->  WindowAgg  (cost=42.62..51.40 rows=503 width=53) (actual time=0.082..0.129 rows=503.00 loops=1)
         Window: w1 AS (ORDER BY created_at ROWS UNBOUNDED PRECEDING)
         Storage: Memory  Maximum Storage: 17kB
         Buffers: shared hit=18
-        ->  Sort  (cost=42.60..43.86 rows=503 width=45) (actual time=0.083..0.093 rows=503.00 loops=1)
+        ->  Sort  (cost=42.60..43.86 rows=503 width=45) (actual time=0.078..0.088 rows=503.00 loops=1)
               Sort Key: created_at
               Sort Method: quicksort  Memory: 57kB
               Buffers: shared hit=18
-              ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=45) (actual time=0.005..0.046 rows=503.00 loops=1)
+              ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=45) (actual time=0.004..0.044 rows=503.00 loops=1)
                     Buffers: shared hit=15
 Planning:
   Buffers: shared hit=97
-Planning Time: 0.167 ms
-Execution Time: 0.251 ms
+Planning Time: 0.183 ms
+Execution Time: 0.340 ms
 
 === R7 run 2 ===
-WindowAgg  (cost=42.65..60.21 rows=503 width=65) (actual time=0.092..0.235 rows=503.00 loops=1)
+WindowAgg  (cost=42.65..60.21 rows=503 width=65) (actual time=0.083..0.199 rows=503.00 loops=1)
   Window: w2 AS (ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
   Storage: Memory  Maximum Storage: 17kB
   Buffers: shared hit=18
-  ->  WindowAgg  (cost=42.62..51.40 rows=503 width=53) (actual time=0.087..0.147 rows=503.00 loops=1)
+  ->  WindowAgg  (cost=42.62..51.40 rows=503 width=53) (actual time=0.078..0.125 rows=503.00 loops=1)
         Window: w1 AS (ORDER BY created_at ROWS UNBOUNDED PRECEDING)
         Storage: Memory  Maximum Storage: 17kB
         Buffers: shared hit=18
-        ->  Sort  (cost=42.60..43.86 rows=503 width=45) (actual time=0.083..0.093 rows=503.00 loops=1)
+        ->  Sort  (cost=42.60..43.86 rows=503 width=45) (actual time=0.075..0.084 rows=503.00 loops=1)
               Sort Key: created_at
               Sort Method: quicksort  Memory: 57kB
               Buffers: shared hit=18
-              ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=45) (actual time=0.004..0.047 rows=503.00 loops=1)
+              ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=45) (actual time=0.003..0.042 rows=503.00 loops=1)
                     Buffers: shared hit=15
 Planning:
   Buffers: shared hit=97
-Planning Time: 0.208 ms
-Execution Time: 0.288 ms
+Planning Time: 0.156 ms
+Execution Time: 0.237 ms
 
 === R7 run 3 ===
-WindowAgg  (cost=42.65..60.21 rows=503 width=65) (actual time=0.092..0.209 rows=503.00 loops=1)
+WindowAgg  (cost=42.65..60.21 rows=503 width=65) (actual time=0.083..0.196 rows=503.00 loops=1)
   Window: w2 AS (ORDER BY created_at ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
   Storage: Memory  Maximum Storage: 17kB
   Buffers: shared hit=18
-  ->  WindowAgg  (cost=42.62..51.40 rows=503 width=53) (actual time=0.087..0.134 rows=503.00 loops=1)
+  ->  WindowAgg  (cost=42.62..51.40 rows=503 width=53) (actual time=0.079..0.125 rows=503.00 loops=1)
         Window: w1 AS (ORDER BY created_at ROWS UNBOUNDED PRECEDING)
         Storage: Memory  Maximum Storage: 17kB
         Buffers: shared hit=18
-        ->  Sort  (cost=42.60..43.86 rows=503 width=45) (actual time=0.083..0.092 rows=503.00 loops=1)
+        ->  Sort  (cost=42.60..43.86 rows=503 width=45) (actual time=0.076..0.085 rows=503.00 loops=1)
               Sort Key: created_at
               Sort Method: quicksort  Memory: 57kB
               Buffers: shared hit=18
-              ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=45) (actual time=0.005..0.048 rows=503.00 loops=1)
+              ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=45) (actual time=0.004..0.042 rows=503.00 loops=1)
                     Buffers: shared hit=15
 Planning:
   Buffers: shared hit=97
-Planning Time: 0.187 ms
-Execution Time: 0.257 ms
+Planning Time: 0.155 ms
+Execution Time: 0.236 ms

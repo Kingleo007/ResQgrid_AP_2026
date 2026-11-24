@@ -1,26 +1,26 @@
 === W4 run 1 ===
-Insert on users  (cost=0.00..0.03 rows=1 width=136) (actual time=0.117..0.118 rows=1.00 loops=1)
-  Buffers: shared hit=48
-  ->  Result  (cost=0.00..0.03 rows=1 width=136) (actual time=0.015..0.015 rows=1.00 loops=1)
-Planning:
-  Buffers: shared hit=15
-Planning Time: 0.042 ms
-Execution Time: 0.136 ms
-
-=== W4 run 2 ===
-Insert on users  (cost=0.00..0.03 rows=1 width=136) (actual time=0.138..0.139 rows=1.00 loops=1)
-  Buffers: shared hit=49
+Insert on users  (cost=0.00..0.03 rows=1 width=136) (actual time=0.147..0.147 rows=1.00 loops=1)
+  Buffers: shared hit=49 dirtied=3
   ->  Result  (cost=0.00..0.03 rows=1 width=136) (actual time=0.020..0.020 rows=1.00 loops=1)
 Planning:
   Buffers: shared hit=15
-Planning Time: 0.043 ms
-Execution Time: 0.162 ms
+Planning Time: 0.041 ms
+Execution Time: 0.167 ms
 
-=== W4 run 3 ===
-Insert on users  (cost=0.00..0.03 rows=1 width=136) (actual time=0.106..0.107 rows=1.00 loops=1)
+=== W4 run 2 ===
+Insert on users  (cost=0.00..0.03 rows=1 width=136) (actual time=0.106..0.106 rows=1.00 loops=1)
   Buffers: shared hit=49
-  ->  Result  (cost=0.00..0.03 rows=1 width=136) (actual time=0.014..0.014 rows=1.00 loops=1)
+  ->  Result  (cost=0.00..0.03 rows=1 width=136) (actual time=0.013..0.013 rows=1.00 loops=1)
 Planning:
   Buffers: shared hit=15
-Planning Time: 0.042 ms
-Execution Time: 0.126 ms
+Planning Time: 0.037 ms
+Execution Time: 0.123 ms
+
+=== W4 run 3 ===
+Insert on users  (cost=0.00..0.03 rows=1 width=136) (actual time=0.098..0.099 rows=1.00 loops=1)
+  Buffers: shared hit=49
+  ->  Result  (cost=0.00..0.03 rows=1 width=136) (actual time=0.012..0.012 rows=1.00 loops=1)
+Planning:
+  Buffers: shared hit=15
+Planning Time: 0.037 ms
+Execution Time: 0.115 ms

@@ -1,0 +1,83 @@
+=== R8 run 1 ===
+Sort  (cost=57.87..58.63 rows=303 width=74) (actual time=0.241..0.247 rows=303.00 loops=1)
+  Sort Key: h.hazard_total DESC, i.created_at DESC
+  Sort Method: quicksort  Memory: 53kB
+  Buffers: shared hit=36
+  ->  Hash Join  (cost=22.74..45.38 rows=303 width=74) (actual time=0.075..0.129 rows=303.00 loops=1)
+        Hash Cond: (i.hazard_type = h.hazard_type)
+        Buffers: shared hit=30
+        ->  Seq Scan on incidents i  (cost=0.00..21.29 rows=303 width=66) (actual time=0.004..0.031 rows=303.00 loops=1)
+              Filter: (status <> ALL ('{resolved,closed}'::text[]))
+              Rows Removed by Filter: 200
+              Buffers: shared hit=15
+        ->  Hash  (cost=22.66..22.66 rows=6 width=15) (actual time=0.068..0.068 rows=6.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 9kB
+              Buffers: shared hit=15
+              ->  Subquery Scan on h  (cost=22.55..22.66 rows=6 width=15) (actual time=0.065..0.066 rows=6.00 loops=1)
+                    Buffers: shared hit=15
+                    ->  HashAggregate  (cost=22.55..22.61 rows=6 width=15) (actual time=0.065..0.065 rows=6.00 loops=1)
+                          Group Key: incidents.hazard_type
+                          Batches: 1  Memory Usage: 32kB
+                          Buffers: shared hit=15
+                          ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=7) (actual time=0.001..0.028 rows=503.00 loops=1)
+                                Buffers: shared hit=15
+Planning:
+  Buffers: shared hit=132
+Planning Time: 0.239 ms
+Execution Time: 0.287 ms
+
+=== R8 run 2 ===
+Sort  (cost=57.87..58.63 rows=303 width=74) (actual time=0.235..0.240 rows=303.00 loops=1)
+  Sort Key: h.hazard_total DESC, i.created_at DESC
+  Sort Method: quicksort  Memory: 53kB
+  Buffers: shared hit=36
+  ->  Hash Join  (cost=22.74..45.38 rows=303 width=74) (actual time=0.072..0.126 rows=303.00 loops=1)
+        Hash Cond: (i.hazard_type = h.hazard_type)
+        Buffers: shared hit=30
+        ->  Seq Scan on incidents i  (cost=0.00..21.29 rows=303 width=66) (actual time=0.004..0.031 rows=303.00 loops=1)
+              Filter: (status <> ALL ('{resolved,closed}'::text[]))
+              Rows Removed by Filter: 200
+              Buffers: shared hit=15
+        ->  Hash  (cost=22.66..22.66 rows=6 width=15) (actual time=0.065..0.065 rows=6.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 9kB
+              Buffers: shared hit=15
+              ->  Subquery Scan on h  (cost=22.55..22.66 rows=6 width=15) (actual time=0.063..0.064 rows=6.00 loops=1)
+                    Buffers: shared hit=15
+                    ->  HashAggregate  (cost=22.55..22.61 rows=6 width=15) (actual time=0.063..0.063 rows=6.00 loops=1)
+                          Group Key: incidents.hazard_type
+                          Batches: 1  Memory Usage: 32kB
+                          Buffers: shared hit=15
+                          ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=7) (actual time=0.001..0.026 rows=503.00 loops=1)
+                                Buffers: shared hit=15
+Planning:
+  Buffers: shared hit=132
+Planning Time: 0.220 ms
+Execution Time: 0.285 ms
+
+=== R8 run 3 ===
+Sort  (cost=57.87..58.63 rows=303 width=74) (actual time=0.239..0.245 rows=303.00 loops=1)
+  Sort Key: h.hazard_total DESC, i.created_at DESC
+  Sort Method: quicksort  Memory: 53kB
+  Buffers: shared hit=36
+  ->  Hash Join  (cost=22.74..45.38 rows=303 width=74) (actual time=0.072..0.124 rows=303.00 loops=1)
+        Hash Cond: (i.hazard_type = h.hazard_type)
+        Buffers: shared hit=30
+        ->  Seq Scan on incidents i  (cost=0.00..21.29 rows=303 width=66) (actual time=0.004..0.032 rows=303.00 loops=1)
+              Filter: (status <> ALL ('{resolved,closed}'::text[]))
+              Rows Removed by Filter: 200
+              Buffers: shared hit=15
+        ->  Hash  (cost=22.66..22.66 rows=6 width=15) (actual time=0.065..0.065 rows=6.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 9kB
+              Buffers: shared hit=15
+              ->  Subquery Scan on h  (cost=22.55..22.66 rows=6 width=15) (actual time=0.062..0.063 rows=6.00 loops=1)
+                    Buffers: shared hit=15
+                    ->  HashAggregate  (cost=22.55..22.61 rows=6 width=15) (actual time=0.062..0.062 rows=6.00 loops=1)
+                          Group Key: incidents.hazard_type
+                          Batches: 1  Memory Usage: 32kB
+                          Buffers: shared hit=15
+                          ->  Seq Scan on incidents  (cost=0.00..20.03 rows=503 width=7) (actual time=0.001..0.025 rows=503.00 loops=1)
+                                Buffers: shared hit=15
+Planning:
+  Buffers: shared hit=132
+Planning Time: 0.217 ms
+Execution Time: 0.286 ms
