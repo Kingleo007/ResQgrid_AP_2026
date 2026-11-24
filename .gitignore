@@ -31,3 +31,6 @@ backend/src/generated/
 
 # Prisma migrations (optional — commit if you want migration history)
 # backend/prisma/migrations/
+
+# Local step log
+dbms/steps.md

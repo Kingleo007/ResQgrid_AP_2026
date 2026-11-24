@@ -1,65 +1,48 @@
 -- 03_schema.sql — PostgreSQL CREATE TABLE statements for ResQGrid
--- Run: psql -U postgres -d resqgrid -f 03_schema.sql
+-- Matches the live Prisma-managed tables in database: resqgrid (schema: public)
+-- Run: psql -U karun -d resqgrid -f dbms/03_schema.sql
 
-
--- Drop existing tables (safe re-run — child table before parent)
+-- Drop existing tables (safe re-run)
 DROP TABLE IF EXISTS incidents;
 DROP TABLE IF EXISTS users;
 
-
-
 -- TABLE: users
 -- Stores admin/staff accounts. Passwords stored as bcrypt hashes only.
--- Primary key   : id 
+-- Primary key   : id
 -- Candidate key : email
 CREATE TABLE users (
-    id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    email         TEXT        NOT NULL UNIQUE,          -- candidate key
-    name          TEXT        NOT NULL,
-    password_hash TEXT        NOT NULL,                 -- bcrypt hash, never plain text
-    created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+    id            TEXT         PRIMARY KEY,
+    name          TEXT         NOT NULL,
+    email         TEXT         NOT NULL UNIQUE,          -- candidate key
+    password_hash TEXT         NOT NULL,                 -- bcrypt hash, never plain text
+    created_at    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-
 
 -- TABLE: incidents
--- Core entity. Each incident may be linked to the user who created it.
--- Primary key   : id 
--- Candidate key : incident_code 
--- Foreign key   : created_by → users(id)
+-- Core entity storing disaster/emergency incident reports.
+-- Primary key   : id
+-- Candidate key : incident_code
 CREATE TABLE incidents (
-    id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    incident_code TEXT        NOT NULL UNIQUE,          -- candidate key
-    title         TEXT        NOT NULL,
-    hazard_type   TEXT        NOT NULL
-                              CHECK (hazard_type IN
-                                ('flood','fire','cyclone','earthquake','landslide','other')),
-    severity      TEXT        NOT NULL
-                              CHECK (severity IN
-                                ('low','moderate','high','critical')),
-    status        TEXT        NOT NULL DEFAULT 'reported'
-                              CHECK (status IN
-                                ('reported','active','contained','resolved','closed')),
-    description   TEXT,                                 -- optional field
-    location_name TEXT,                                 -- optional field
-    created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-    created_by    UUID        REFERENCES users(id)      -- FK: many incidents → one user
-                              ON DELETE SET NULL         -- keep incident if user is deleted
+    id            TEXT         PRIMARY KEY,
+    incident_code TEXT         NOT NULL UNIQUE,          -- candidate key (e.g. INC-2026-0001)
+    title         TEXT         NOT NULL,
+    hazard_type   TEXT         NOT NULL
+                               CHECK (hazard_type IN
+                                 ('flood','fire','cyclone','earthquake','landslide','other')),
+    severity      TEXT         NOT NULL
+                               CHECK (severity IN
+                                 ('low','moderate','high','critical')),
+    status        TEXT         NOT NULL DEFAULT 'reported'
+                               CHECK (status IN
+                                 ('reported','active','contained','resolved','closed')),
+    description   TEXT,                                  -- optional field
+    location_name TEXT,                                  -- optional field
+    created_at    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP(3) NOT NULL
 );
 
-
-
--- Indexes- makes database searches faster = not need for small dataset as sequencial scans are fast enough
-
--- idx_incidents_status: dashboard queries filter by status
-CREATE INDEX idx_incidents_status      ON incidents(status);
-
--- idx_incidents_hazard:  filter incidents list by hazard type
-CREATE INDEX idx_incidents_hazard_type ON incidents(hazard_type);
-
--- idx_incidents_created: ORDER BY created_at DESC (default sort for list page)
-CREATE INDEX idx_incidents_created_at  ON incidents(created_at DESC);
-
--- idx_incidents_creator: JOIN incidents → users ON created_by = users.id
-CREATE INDEX idx_incidents_created_by  ON incidents(created_by);
+-- Automatic indexes created by PRIMARY KEY and UNIQUE constraints:
+--   users_pkey                ON users(id)
+--   users_email_key           ON users(email)
+--   incidents_pkey            ON incidents(id)
+--   incidents_incident_code_key ON incidents(incident_code)

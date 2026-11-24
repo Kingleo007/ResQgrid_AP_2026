@@ -1,0 +1,35 @@
+=== R4b run 1 ===
+Aggregate  (cost=22.05..22.06 rows=1 width=8) (actual time=0.055..0.055 rows=1.00 loops=1)
+  Buffers: shared hit=15
+  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=303 width=0) (actual time=0.005..0.048 rows=303.00 loops=1)
+        Filter: (status <> ALL ('{resolved,closed}'::text[]))
+        Rows Removed by Filter: 200
+        Buffers: shared hit=15
+Planning:
+  Buffers: shared hit=135
+Planning Time: 0.232 ms
+Execution Time: 0.073 ms
+
+=== R4b run 2 ===
+Aggregate  (cost=22.05..22.06 rows=1 width=8) (actual time=0.067..0.068 rows=1.00 loops=1)
+  Buffers: shared hit=15
+  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=303 width=0) (actual time=0.008..0.059 rows=303.00 loops=1)
+        Filter: (status <> ALL ('{resolved,closed}'::text[]))
+        Rows Removed by Filter: 200
+        Buffers: shared hit=15
+Planning:
+  Buffers: shared hit=135
+Planning Time: 0.291 ms
+Execution Time: 0.092 ms
+
+=== R4b run 3 ===
+Aggregate  (cost=22.05..22.06 rows=1 width=8) (actual time=0.075..0.076 rows=1.00 loops=1)
+  Buffers: shared hit=15
+  ->  Seq Scan on incidents  (cost=0.00..21.29 rows=303 width=0) (actual time=0.013..0.067 rows=303.00 loops=1)
+        Filter: (status <> ALL ('{resolved,closed}'::text[]))
+        Rows Removed by Filter: 200
+        Buffers: shared hit=15
+Planning:
+  Buffers: shared hit=135
+Planning Time: 0.301 ms
+Execution Time: 0.101 ms

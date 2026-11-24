@@ -1,9 +1,10 @@
 -- 04_queries.sql — All SQL queries used by the ResQGrid app
--- Each query has an ID 
+-- Each query is marked READ or WRITE with an ID (R1..R7, W1..W4).
 
 
-
+-- =====================================================================
 -- READ QUERIES
+-- =====================================================================
 
 -- R1 — READ
 -- Purpose : Login — find a user by email so the app can compare the password hash
@@ -38,26 +39,22 @@ ORDER BY created_at DESC;
 
 
 -- R3 — READ
--- Purpose : Get one incident with the name of the user who created it (JOIN)
+-- Purpose : Get one incident by ID (Incident detail page)
 -- Route   : GET /api/incidents/:id
 -- Used by : incidentController.getOne → incidentModel.findById
 SELECT
-    i.id,
-    i.incident_code,
-    i.title,
-    i.hazard_type,
-    i.severity,
-    i.status,
-    i.description,
-    i.location_name,
-    i.created_at,
-    i.updated_at,
-    i.created_by,
-    u.name  AS reporter_name,
-    u.email AS reporter_email
-FROM   incidents i
-LEFT JOIN users u ON u.id = i.created_by
-WHERE  i.id = $1;          -- $1 = UUID from the URL /incidents/:id
+    id,
+    incident_code,
+    title,
+    hazard_type,
+    severity,
+    status,
+    description,
+    location_name,
+    created_at,
+    updated_at
+FROM incidents
+WHERE id = $1;             -- $1 = incident ID from /incidents/:id
 
 
 -- R4a — READ
@@ -86,21 +83,21 @@ FROM incidents
 WHERE status = 'resolved';
 
 
--- R6 — READ  (educational)
+-- R5 — READ (CTE summary)
 -- Purpose : Combine the three dashboard counts into one query using a CTE
 -- Shows   : Common Table Expression (WITH ... AS)
 WITH counts AS (
     SELECT
-        COUNT(*)                                                   AS total,
+        COUNT(*)                                                    AS total,
         COUNT(*) FILTER (WHERE status NOT IN ('resolved','closed')) AS active,
-        COUNT(*) FILTER (WHERE status = 'resolved')                AS resolved
+        COUNT(*) FILTER (WHERE status = 'resolved')                 AS resolved
     FROM incidents
 )
 SELECT total, active, resolved
 FROM counts;
 
 
--- R7 — READ  (educational)
+-- R6 — READ (window ranking)
 -- Purpose : Rank incidents by severity within each hazard type
 -- Shows   : RANK() window function with PARTITION BY and ORDER BY inside OVER()
 SELECT
@@ -110,7 +107,7 @@ SELECT
     severity,
     status,
     RANK() OVER (
-        PARTITION BY hazard_type          -- restart rank for each hazard type
+        PARTITION BY hazard_type
         ORDER BY
             CASE severity
                 WHEN 'critical' THEN 1
@@ -123,26 +120,25 @@ FROM incidents
 ORDER BY hazard_type, severity_rank;
 
 
--- R8 — READ  (educational)
+-- R7 — READ (running total)
 -- Purpose : Running count of incidents over time
 -- Shows   : COUNT() as a running total using ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
 SELECT
     incident_code,
     title,
-    created_at::DATE   AS reported_date,
+    created_at::DATE AS reported_date,
     ROW_NUMBER() OVER (ORDER BY created_at) AS incident_number,
     COUNT(*) OVER (
         ORDER BY created_at
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    )                  AS running_total
+    ) AS running_total
 FROM incidents
 ORDER BY created_at;
 
 
-
-
+-- =====================================================================
 -- WRITE QUERIES
-
+-- =====================================================================
 
 -- W1 — WRITE
 -- Purpose : Create a new incident
@@ -157,18 +153,18 @@ INSERT INTO incidents (
     status,
     description,
     location_name,
-    created_by
+    updated_at
 )
 VALUES (
-    gen_random_uuid(),   -- DB generates the UUID
-    $1,                  -- generated code e.g. INC-2026-0006
+    gen_random_uuid()::text,
+    $1,                  -- generated code e.g. INC-2026-0504
     $2,                  -- title
     $3,                  -- hazard_type
     $4,                  -- severity
     'reported',          -- all new incidents start as 'reported'
     $5,                  -- description (may be NULL)
     $6,                  -- location_name (may be NULL)
-    $7                   -- created_by user UUID (may be NULL)
+    now()                -- updated_at
 )
 RETURNING id, incident_code, title, hazard_type, severity, status,
           description, location_name, created_at, updated_at;
@@ -180,7 +176,7 @@ RETURNING id, incident_code, title, hazard_type, severity, status,
 -- Used by : incidentController.update → incidentModel.updateIncident
 UPDATE incidents
 SET
-    title         = COALESCE($2, title),         -- keep old value if NULL is passed
+    title         = COALESCE($2, title),
     hazard_type   = COALESCE($3, hazard_type),
     severity      = COALESCE($4, severity),
     status        = COALESCE($5, status),
@@ -205,5 +201,5 @@ WHERE id = $1;
 -- Route   : POST /api/users
 -- Used by : userController.create → userModel.createUser
 INSERT INTO users (id, email, name, password_hash)
-VALUES (gen_random_uuid(), $1, $2, $3)
+VALUES (gen_random_uuid()::text, $1, $2, $3)
 RETURNING id, email, name, created_at;
